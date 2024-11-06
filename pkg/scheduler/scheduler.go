@@ -9,6 +9,8 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/jackc/pgtype"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/nikhilbhatia08/taskflow/pkg/common"
 )
@@ -30,6 +32,16 @@ type CommandRequest struct {
 type CommandResponse struct {
 	Command string `json:"command"`
 	Status string `json:"status"`
+}
+
+type Schedule struct {
+	Id string
+	Command string 
+	ScheduledAt pgtype.Timestamp
+	PickedAt pgtype.Timestamp
+	StartedAt pgtype.Timestamp
+	CompletedAt pgtype.Timestamp
+	FailedAt pgtype.Timestamp
 }
 
 func NewSchedulerServer(port string, dbConnectionString string) *SchedulerServer {
@@ -85,13 +97,24 @@ func (s *SchedulerServer) SubmitHandler(w http.ResponseWriter, r *http.Request) 
 		http.Error(w, "Invalid scheduled time", http.StatusBadRequest)
 		return
 	}
+
+	convertedTinmeStampToUnix := time.Unix(scheduledTime.Unix(), 0)
+
+	insertedId, err := s.insertScheduleIntoDb(s.ctx, Schedule{Command: request.Command, ScheduledAt: pgtype.Timestamp{Time: convertedTinmeStampToUnix}})
+
+	if err != nil {
+		log.Fatalf("Error inserting in the db %v", err)
+	}
+	
 	response := struct {
 		Command string `json:"command"`
 		Status string `json:"status"`
+		InsertedId string `jsong:"InsertedId"`
 		Scheduled_at int64 `json:"scheduled_at"`
 	} {
 		Command: request.Command,
 		Scheduled_at: scheduledTime.Unix(),
+		InsertedId: insertedId,
 		Status: "Received",
 	}
 	jsonResponse, err := json.Marshal(response)
@@ -102,6 +125,17 @@ func (s *SchedulerServer) SubmitHandler(w http.ResponseWriter, r *http.Request) 
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(jsonResponse)
 }
+
+func (s *SchedulerServer) insertScheduleIntoDb(ctx context.Context, schedule Schedule) (string, error) {
+	sqlStatement := "INSERT INTO SCHEDULES (command, scheduled_at) VALUES($1, $2) RETURNING id"
+	var insertedId string
+	err := s.dbpool.QueryRow(ctx, sqlStatement, schedule.Command, schedule.ScheduledAt.Time).Scan(&insertedId)
+	if err != nil {
+		return "", err
+	}
+
+	return insertedId, nil
+} 
 
 func (s *SchedulerServer) AwaitGracefulShutdown() error {
 	stop := make(chan os.Signal, 1)

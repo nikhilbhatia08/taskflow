@@ -1,6 +1,6 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
-CREATE TABLE tasks (
+CREATE TABLE schedules (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     command TEXT NOT NULL,
     scheduled_at TIMESTAMP NOT NULL,
@@ -10,4 +10,4 @@ CREATE TABLE tasks (
     failed_at TIMESTAMP -- when the task failed (failure case)
 );
 
-CREATE INDEX idx_tasks_scheduled_at ON tasks (scheduled_at);
+CREATE INDEX idx_tasks_scheduled_at ON schedules (scheduled_at);

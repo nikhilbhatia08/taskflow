@@ -1,6 +1,7 @@
 # TaskFlow: Task scheduler in Go
 
-![TaskFlow Hero](assets/taskflow.png)
+![TaskFlow Hero](assets/taskflow.png#gh-light-mode-only)
+![TaskFlow Hero](assets/taskflowdark.png#gh-dark-mode-only)
 
 TaskFlow is an efficient task scheduler which is used to schedule jobs and tasks and multiple workers can pick those tasks and execute them
 
