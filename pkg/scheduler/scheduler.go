@@ -24,10 +24,12 @@ type SchedulerServer struct {
 
 type CommandRequest struct {
 	Command string `json:"command"`
+	Scheduled_at string `json:"scheduled_at"`
 }
 
 type CommandResponse struct {
 	Command string `json:"command"`
+	Status string `json:"status"`
 }
 
 func NewSchedulerServer(port string, dbConnectionString string) *SchedulerServer {
@@ -76,7 +78,22 @@ func (s *SchedulerServer) SubmitHandler(w http.ResponseWriter, r *http.Request) 
 	}
 
 	log.Println("Received command: ", request.Command)
-	response := CommandResponse(request)
+	log.Println("Scheduled at: ", request.Scheduled_at)
+
+	scheduledTime, err := time.Parse(time.RFC3339, request.Scheduled_at)
+	if err != nil {
+		http.Error(w, "Invalid scheduled time", http.StatusBadRequest)
+		return
+	}
+	response := struct {
+		Command string `json:"command"`
+		Status string `json:"status"`
+		Scheduled_at int64 `json:"scheduled_at"`
+	} {
+		Command: request.Command,
+		Scheduled_at: scheduledTime.Unix(),
+		Status: "Received",
+	}
 	jsonResponse, err := json.Marshal(response)
 	if err != nil {
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
