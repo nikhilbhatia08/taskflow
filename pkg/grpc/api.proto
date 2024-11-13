@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package grpc;
+
+option go_package = "/";
+
+service CoordinatorService {
+    rpc UpdateTaskStatus(UpdateTaskStatusRequest) returns (UpdateTaskStatusResponse) {}
+}
+
+service QueueService {
+    rpc EnqueueTask(EnqueueTaskRequest) returns (EnqueueTaskResponse) {}
+}
+
+message EnqueueTaskRequest {
+    string Id = 1;
+    string payload = 2; // this is a json payload
+}
+
+message EnqueueTaskResponse {
+    string status = 1;
+}
+
+message UpdateTaskStatusRequest {
+    string task_id = 1;
+    string status = 2;
+}
+
+message UpdateTaskStatusResponse {
+    string status = 1;
+}
+

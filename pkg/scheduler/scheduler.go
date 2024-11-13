@@ -25,18 +25,17 @@ type SchedulerServer struct {
 }
 
 type CommandRequest struct {
-	Command string `json:"command"`
+	Payload map[string]interface{} `json:"payload"`
 	Scheduled_at string `json:"scheduled_at"`
 }
 
 type CommandResponse struct {
-	Command string `json:"command"`
 	Status string `json:"status"`
 }
 
 type Schedule struct {
 	Id string
-	Command string 
+	Payload map[string]interface{}
 	ScheduledAt pgtype.Timestamp
 	PickedAt pgtype.Timestamp
 	StartedAt pgtype.Timestamp
@@ -89,7 +88,7 @@ func (s *SchedulerServer) SubmitHandler(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	log.Println("Received command: ", request.Command)
+	log.Println("Received command: ", request.Payload)
 	log.Println("Scheduled at: ", request.Scheduled_at)
 
 	scheduledTime, err := time.Parse(time.RFC3339, request.Scheduled_at)
@@ -100,19 +99,17 @@ func (s *SchedulerServer) SubmitHandler(w http.ResponseWriter, r *http.Request) 
 
 	convertedTinmeStampToUnix := time.Unix(scheduledTime.Unix(), 0)
 
-	insertedId, err := s.insertScheduleIntoDb(s.ctx, Schedule{Command: request.Command, ScheduledAt: pgtype.Timestamp{Time: convertedTinmeStampToUnix}})
+	insertedId, err := s.insertScheduleIntoDb(s.ctx, Schedule{Payload: request.Payload, ScheduledAt: pgtype.Timestamp{Time: convertedTinmeStampToUnix}})
 
 	if err != nil {
 		log.Fatalf("Error inserting in the db %v", err)
 	}
 	
 	response := struct {
-		Command string `json:"command"`
 		Status string `json:"status"`
 		InsertedId string `jsong:"InsertedId"`
 		Scheduled_at int64 `json:"scheduled_at"`
 	} {
-		Command: request.Command,
 		Scheduled_at: scheduledTime.Unix(),
 		InsertedId: insertedId,
 		Status: "Received",
@@ -127,9 +124,9 @@ func (s *SchedulerServer) SubmitHandler(w http.ResponseWriter, r *http.Request) 
 }
 
 func (s *SchedulerServer) insertScheduleIntoDb(ctx context.Context, schedule Schedule) (string, error) {
-	sqlStatement := "INSERT INTO SCHEDULES (command, scheduled_at) VALUES($1, $2) RETURNING id"
+	sqlStatement := "INSERT INTO SCHEDULES (payload, scheduled_at) VALUES($1, $2) RETURNING id"
 	var insertedId string
-	err := s.dbpool.QueryRow(ctx, sqlStatement, schedule.Command, schedule.ScheduledAt.Time).Scan(&insertedId)
+	err := s.dbpool.QueryRow(ctx, sqlStatement, schedule.Payload, schedule.ScheduledAt.Time).Scan(&insertedId)
 	if err != nil {
 		return "", err
 	}
