@@ -10,11 +10,22 @@ service CoordinatorService {
 
 service QueueService {
     rpc EnqueueTask(EnqueueTaskRequest) returns (EnqueueTaskResponse) {}
+    rpc DequeueTask(DequeueTaskRequest) returns (DequeueTaskResponse) {}
+}
+
+message DequeueTaskRequest {
+    string queueName = 1;
+}
+
+message DequeueTaskResponse {
+    string Id = 1;
+    string payload = 2;
 }
 
 message EnqueueTaskRequest {
     string Id = 1;
-    string payload = 2; // this is a json payload
+    string queueName = 2;
+    string payload = 3; // this is a json payload
 }
 
 message EnqueueTaskResponse {
@@ -29,4 +40,3 @@ message UpdateTaskStatusRequest {
 message UpdateTaskStatusResponse {
     string status = 1;
 }
-
