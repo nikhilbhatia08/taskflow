@@ -3,11 +3,12 @@ package common
 import (
 	"context"
 	"log"
+
 	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 func GetDbConnectionString() string {
-	conn := "postgres://nehabhatia@localhost:5433/testdb?sslmode=disable"
+	conn := "postgres://nehabhatia@localhost:5432/testdb?sslmode=disable"
 	return conn
 }
 

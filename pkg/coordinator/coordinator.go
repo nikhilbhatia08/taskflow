@@ -76,14 +76,14 @@ func (s *CoordinatorService) ScanDatabase() {
 
 	for {
 		select {
-		case <-ticker.C: 
+		case <-ticker.C:
 			go  s.SendAllScheduledTasksToQueue()
 		case <-s.ctx.Done():
 			log.Printf("Shutting down database scanner")
 			return
 		}
 	}
-} 
+}
 
 func (s *CoordinatorService) SendAllScheduledTasksToQueue() {
 	ctx, cancel := context.WithTimeout(context.Background(), 30 * time.Second)
@@ -97,7 +97,7 @@ func (s *CoordinatorService) SendAllScheduledTasksToQueue() {
 
 	defer func() {
 		if err := tx.Rollback(ctx); err != nil && err.Error() != "tx is closed" {
-			log.Printf("ERROR: %#v", err)
+			log.Printf("ERROR: %v", err)
 			log.Printf("Failed to rollback transaction: %v\n", err)
 		}
 	}()
@@ -106,9 +106,10 @@ func (s *CoordinatorService) SendAllScheduledTasksToQueue() {
 
 	if err != nil {
 		log.Printf("Error Executing the query %v\n", err)
-		return 
+		return
 	}
 	defer rows.Close()
 
-	
+
+
 }

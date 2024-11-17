@@ -13,6 +13,22 @@ service QueueService {
     rpc DequeueTask(DequeueTaskRequest) returns (DequeueTaskResponse) {}
 }
 
+service JobService {
+    rpc CreateJob(CreateJobRequest) returns (CreateJobResponse) {}
+}
+
+message CreateJobRequest {
+    string Id = 1;
+    string queueName = 2;
+    string payload = 3;
+    int32 retries = 4;
+}
+
+message CreateJobResponse {
+    string status = 1;
+}
+
+
 message DequeueTaskRequest {
     string queueName = 1;
 }

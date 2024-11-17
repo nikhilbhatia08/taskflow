@@ -259,3 +259,105 @@ var QueueService_ServiceDesc = grpc.ServiceDesc{
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "api.proto",
 }
+
+const (
+	JobService_CreateJob_FullMethodName = "/grpc.JobService/CreateJob"
+)
+
+// JobServiceClient is the client API for JobService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type JobServiceClient interface {
+	CreateJob(ctx context.Context, in *CreateJobRequest, opts ...grpc.CallOption) (*CreateJobResponse, error)
+}
+
+type jobServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewJobServiceClient(cc grpc.ClientConnInterface) JobServiceClient {
+	return &jobServiceClient{cc}
+}
+
+func (c *jobServiceClient) CreateJob(ctx context.Context, in *CreateJobRequest, opts ...grpc.CallOption) (*CreateJobResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateJobResponse)
+	err := c.cc.Invoke(ctx, JobService_CreateJob_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// JobServiceServer is the server API for JobService service.
+// All implementations must embed UnimplementedJobServiceServer
+// for forward compatibility.
+type JobServiceServer interface {
+	CreateJob(context.Context, *CreateJobRequest) (*CreateJobResponse, error)
+	mustEmbedUnimplementedJobServiceServer()
+}
+
+// UnimplementedJobServiceServer must be embedded to have
+// forward compatible implementations.
+//
+// NOTE: this should be embedded by value instead of pointer to avoid a nil
+// pointer dereference when methods are called.
+type UnimplementedJobServiceServer struct{}
+
+func (UnimplementedJobServiceServer) CreateJob(context.Context, *CreateJobRequest) (*CreateJobResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateJob not implemented")
+}
+func (UnimplementedJobServiceServer) mustEmbedUnimplementedJobServiceServer() {}
+func (UnimplementedJobServiceServer) testEmbeddedByValue()                    {}
+
+// UnsafeJobServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to JobServiceServer will
+// result in compilation errors.
+type UnsafeJobServiceServer interface {
+	mustEmbedUnimplementedJobServiceServer()
+}
+
+func RegisterJobServiceServer(s grpc.ServiceRegistrar, srv JobServiceServer) {
+	// If the following call pancis, it indicates UnimplementedJobServiceServer was
+	// embedded by pointer and is nil.  This will cause panics if an
+	// unimplemented method is ever invoked, so we test this at initialization
+	// time to prevent it from happening at runtime later due to I/O.
+	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
+		t.testEmbeddedByValue()
+	}
+	s.RegisterService(&JobService_ServiceDesc, srv)
+}
+
+func _JobService_CreateJob_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateJobRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(JobServiceServer).CreateJob(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: JobService_CreateJob_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(JobServiceServer).CreateJob(ctx, req.(*CreateJobRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// JobService_ServiceDesc is the grpc.ServiceDesc for JobService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var JobService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "grpc.JobService",
+	HandlerType: (*JobServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "CreateJob",
+			Handler:    _JobService_CreateJob_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "api.proto",
+}

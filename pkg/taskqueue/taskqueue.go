@@ -136,7 +136,7 @@ func (q *QueueService) FormQueue(queueName string) string {
 	}
 
 	q.queues[queueName] = &TaskQueue{
-		Task: make(chan Task, 100),
+		Task: make(chan Task, 1000),
 	}
 	res := "The queue with the name " + queueName + " has formed"
 	return res
@@ -180,10 +180,17 @@ func (q *QueueService) DequeueTask(ctx context.Context, req *pb.DequeueTaskReque
 		}, nil
 	}
 
+	if len(q.queues[req.GetQueueName()].Task) == 0 {
+		return &pb.DequeueTaskResponse{
+			Id:      "-2",
+			Payload: "The Queue is empty",
+		}, nil
+	}
+
 	dqTaskRes := <-q.queues[req.GetQueueName()].Task
 	jsonPayload, err := json.Marshal(dqTaskRes.Payload)
 	if err != nil {
-		log.Fatal("Problem in marshalling the data")
+		log.Println("Problem in marshalling the data")
 		return &pb.DequeueTaskResponse{
 			Id:      "-1",
 			Payload: "Queue Does Not Exists",
@@ -194,3 +201,7 @@ func (q *QueueService) DequeueTask(ctx context.Context, req *pb.DequeueTaskReque
 		Payload: string(jsonPayload),
 	}, nil
 }
+
+// func (q *QueueService) GetAllTaskQueues() (error) {
+
+// }
