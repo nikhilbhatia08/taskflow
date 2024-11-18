@@ -12,6 +12,11 @@ import (
 	"google.golang.org/grpc"
 )
 
+var (
+	SUCCESS int32 = 200
+	FAILURE int32 = 420
+)
+
 type CreateJobRequest struct {
 	QueueName string
 	Payload   string
@@ -29,6 +34,11 @@ type gRPCInfo struct {
 type Job struct {
 	Id      string
 	Payload string
+}
+
+type CreateJobResponse struct {
+	Id     string
+	Status string
 }
 
 type ExecutionStatus struct {
@@ -55,7 +65,7 @@ func CreateWorkerClient(hostString string, queueName string, handler func(contex
 	}
 }
 
-func (g *gRPCInfo) NewTask(ctx context.Context, req CreateJobRequest) string {
+func (g *gRPCInfo) NewTask(ctx context.Context, req *CreateJobRequest) *CreateJobResponse {
 	// log.Println(args...)
 	conn, err := grpc.Dial(g.port, grpc.WithInsecure())
 	if err != nil {
@@ -71,7 +81,10 @@ func (g *gRPCInfo) NewTask(ctx context.Context, req CreateJobRequest) string {
 	})
 
 	log.Println(resp.Status)
-	return "recieved"
+	return &CreateJobResponse{
+		Id:     resp.Id,
+		Status: resp.Status,
+	}
 }
 
 func (g *gRPCInfo) Run() error {
@@ -114,13 +127,16 @@ func (g *gRPCInfo) AwaitShutdown() error {
 }
 
 func (w *WorkerClient) Run() error {
+	conn1, err := grpc.Dial("localhost:9003", grpc.WithInsecure())
 	conn, err := grpc.Dial(w.hostString, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Error connecting to the grpc server %v", err)
 	}
 	defer conn.Close()
+	defer conn1.Close()
 
 	client := pb.NewQueueServiceClient(conn)
+	client2 := pb.NewJobServiceClient(conn1)
 	for {
 		ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 		defer cancel()
@@ -133,19 +149,25 @@ func (w *WorkerClient) Run() error {
 			time.Sleep(1 * time.Second)
 			continue
 		}
+		if response.GetId() != "-2" {
+			status, err := w.handler(ctx, &Job{
+				Id:      response.GetId(),
+				Payload: response.GetPayload(),
+			})
+			if err != nil {
+				log.Println(err)
+			}
 
-		status, err := w.handler(ctx, &Job{
-			Id:      response.GetId(),
-			Payload: response.GetPayload(),
-		})
-
-		if status.Status != 1 {
-			log.Println("Failure")
-		} else {
-			log.Println("Success")
+			if status.Status == FAILURE {
+				log.Println("Failure")
+			} else if status.Status == SUCCESS {
+				log.Printf("The id is : %v", response.GetId())
+				client2.UpdateJobStatus(ctx, &pb.UpdateJobStatusRequest{
+					Id:         response.GetId(),
+					StatusCode: SUCCESS,
+				})
+			}
 		}
-
-		// Wait before the next poll
 
 		time.Sleep(1 * time.Second)
 	}
@@ -158,6 +180,24 @@ func (w *WorkerClient) AwaitShutdown() error {
 	signal.Notify(signs, unix.SIGTERM, unix.SIGINT)
 	<-signs
 	return nil
+}
+
+func (w *WorkerClient) TriggerReRun(id string) {
+	conn, err := grpc.Dial("localhost:9003", grpc.WithInsecure())
+	if err != nil {
+		log.Printf("Error Connecting to the grpc server %v", err)
+	}
+
+	defer conn.Close()
+	client := pb.NewJobServiceClient(conn)
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+	resp, err := client.TriggerJobReRun(ctx, &pb.TriggerReRunRequest{
+		Id: id,
+	})
+
+	log.Println(resp)
+	log.Println(err)
 }
 
 func (g *gRPCInfo) hehe() {

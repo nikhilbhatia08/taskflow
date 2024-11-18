@@ -10,6 +10,7 @@ import (
 	"sync"
 	"syscall"
 	"time"
+	"unsafe"
 
 	pb "github.com/nikhilbhatia08/taskflow/generatedproto"
 	"google.golang.org/grpc"
@@ -34,6 +35,12 @@ type Task struct {
 	Id      string
 	Payload map[string]interface{}
 }
+
+// type QueueInfo struct {
+// 	State string
+// 	Size int32
+// 	MemoryUsage int32
+// }
 
 // The task queue will contain an Id and payload
 // We will get the task from the coordinator
@@ -136,7 +143,7 @@ func (q *QueueService) FormQueue(queueName string) string {
 	}
 
 	q.queues[queueName] = &TaskQueue{
-		Task: make(chan Task, 1000),
+		Task: make(chan Task, 100000),
 	}
 	res := "The queue with the name " + queueName + " has formed"
 	return res
@@ -153,7 +160,7 @@ func (q *QueueService) EnqueueTask(ctx context.Context, req *pb.EnqueueTaskReque
 		}, nil
 	}
 	var task Task
-	task.Id = req.Id
+	task.Id = req.GetId()
 	if err := json.Unmarshal([]byte(req.GetPayload()), &task.Payload); err != nil {
 		log.Printf("Failed to parse JSON :%v", err)
 		return &pb.EnqueueTaskResponse{
@@ -202,6 +209,27 @@ func (q *QueueService) DequeueTask(ctx context.Context, req *pb.DequeueTaskReque
 	}, nil
 }
 
-// func (q *QueueService) GetAllTaskQueues() (error) {
+func (q *QueueService) AllQueuesInfo(ctx context.Context, req *pb.AllQueuesInfoRequest) (*pb.AllQueuesInfoResponse, error) {
+	q.mu.Lock()
+	defer q.mu.Unlock()
 
-// }
+	resp := []*pb.QueueInfo{}
+	for key, value := range q.queues {
+		resp = append(resp, &pb.QueueInfo{
+			Name:        key,
+			Status:      "Run",
+			Size:        int32(len(value.Task)),
+			MemoryUsage: float64((len(value.Task) * int(unsafe.Sizeof(Task{})) / (1024))),
+		})
+	}
+
+	return &pb.AllQueuesInfoResponse{
+		AllQueuesInformation: resp,
+	}, nil
+}
+
+//
+// TODO :
+// The user should be able to send the queue into blocked state in other words the user should be able to pause the queue
+// func (q * QueueService) GetQueueStatus()
+// func (q *QueueService) ShutdownQueue()

@@ -11,26 +11,69 @@ service CoordinatorService {
 service QueueService {
     rpc EnqueueTask(EnqueueTaskRequest) returns (EnqueueTaskResponse) {}
     rpc DequeueTask(DequeueTaskRequest) returns (DequeueTaskResponse) {}
+    rpc AllQueuesInfo(AllQueuesInfoRequest) returns (AllQueuesInfoResponse) {}
 }
 
 service JobService {
     rpc CreateJob(CreateJobRequest) returns (CreateJobResponse) {}
+    rpc UpdateJobStatus(UpdateJobStatusRequest) returns (UpdateJobStatusResponse) {}
+    rpc TriggerJobReRun(TriggerReRunRequest) returns (TriggerReRunResponse) {}
+    rpc GetJobStatusWithId(GetJobStatusWithIdRequest) returns (GetJobStatusWithIdResponse) {}
+}
+
+message AllQueuesInfoRequest {}
+
+message QueueInfo {
+    string Name = 1;
+    string Status = 2;
+    int32 Size = 3;
+    double MemoryUsage = 4;
+}
+
+message AllQueuesInfoResponse {
+    repeated QueueInfo AllQueuesInformation = 1;
+}
+
+message GetJobStatusWithIdRequest {
+    string Id = 1;
+}
+
+message GetJobStatusWithIdResponse {
+
+}
+
+message TriggerReRunRequest {
+    string Id = 1;
+}
+
+message TriggerReRunResponse {
+    int32 StatusCode = 1;
+}
+
+message UpdateJobStatusRequest {
+    string Id = 1;
+    int32 StatusCode = 2;
+}
+
+message UpdateJobStatusResponse {
+    int32 StatusCode = 1;
 }
 
 message CreateJobRequest {
     string Id = 1;
-    string queueName = 2;
-    string payload = 3;
-    int32 retries = 4;
+    string QueueName = 2;
+    string Payload = 3;
+    int32 Retries = 4;
 }
 
 message CreateJobResponse {
-    string status = 1;
+    string Id = 1;
+    string Status = 2;
 }
 
 
 message DequeueTaskRequest {
-    string queueName = 1;
+    string QueueName = 1;
 }
 
 message DequeueTaskResponse {

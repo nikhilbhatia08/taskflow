@@ -1,3 +1,5 @@
 .env
 
 .idea
+
+taskmon/frontend/node_modules

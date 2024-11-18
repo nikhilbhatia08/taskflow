@@ -38,8 +38,11 @@ type JobService struct {
 	cancel             context.CancelFunc
 }
 
+// This gives information about a particular job or a task
 type JobInfo struct {
 	// this should be filled and will contain information about a job or a task
+	Id      string
+	Payload string
 }
 
 func NewJobServiceServer(port string, dbConnectionString string, queueServiceHost string) *JobService {
@@ -100,10 +103,12 @@ func (j *JobService) AwaitShutdown() error {
 	return nil
 }
 
+// Creates a job and returns a uuid and status of the job
 func (j *JobService) CreateJob(ctx context.Context, req *pb.CreateJobRequest) (*pb.CreateJobResponse, error) {
 	tx, err := j.dbpool.Begin(ctx)
 	if err != nil {
 		return &pb.CreateJobResponse{
+			Id:     "",
 			Status: "Failed to Create Job",
 		}, err
 	}
@@ -121,6 +126,7 @@ func (j *JobService) CreateJob(ctx context.Context, req *pb.CreateJobRequest) (*
 	if err != nil {
 		log.Printf("The sql statement could not be executed due to an error : %v", err)
 		return &pb.CreateJobResponse{
+			Id:     "",
 			Status: "Failed to Create Job",
 		}, err
 	}
@@ -128,10 +134,12 @@ func (j *JobService) CreateJob(ctx context.Context, req *pb.CreateJobRequest) (*
 	if err != nil {
 		log.Printf("The sql statement could not be commited : %v", err)
 		return &pb.CreateJobResponse{
+			Id:     "",
 			Status: "Failed to Create Job",
 		}, err
 	}
 	return &pb.CreateJobResponse{
+		Id:     uuidString,
 		Status: "Success", // this should be changed with their proper status codes
 	}, nil
 }
@@ -169,7 +177,7 @@ func (j *JobService) EnqueueAllReadyJobs() {
 		}
 	}()
 
-	rows, err := tx.Query(ctx, `SELECT id, queuename, payload FROM jobs where status = 1 AND picked_at is NULL`)
+	rows, err := tx.Query(ctx, `SELECT id, queuename, payload FROM jobs where status = $1 AND picked_at is NULL`, common.JOB_READY_TO_RUN)
 	if err != nil {
 		log.Printf("Error querying the jobs %v", err)
 	}
@@ -210,14 +218,14 @@ func (j *JobService) EnqueueAllReadyJobs() {
 		// defer cancel1()
 		res, _ := client.EnqueueTask(context.Background(), job)
 		log.Printf("Enquiung Task success %v", res.Status)
-		// the "Success" status should be changed with the proper status code
+		// TODO : the "Success" status should be changed with the proper status code
 		if res.Status != "Success" {
-			if _, err := tx.Exec(ctx, `UPDATE jobs SET status = 3 WHERE id = $1`, job.Id); err != nil {
+			if _, err := tx.Exec(ctx, `UPDATE jobs SET status = $1 WHERE id = $2`, common.BLOCKED_STATE, job.Id); err != nil {
 				log.Printf("Failed to update task %v with error : %v", job.Id, err)
 				continue
 			}
 		} else {
-			if _, err := tx.Exec(ctx, `UPDATE jobs SET status = 2, picked_at = NOW() WHERE id = $1`, job.Id); err != nil {
+			if _, err := tx.Exec(ctx, `UPDATE jobs SET status = $1, picked_at = NOW() WHERE id = $2`, common.JOB_SENT_TO_QUEUE, job.Id); err != nil {
 				log.Printf("failed to update task %v with error %v:", job.Id, err)
 				continue
 			}
@@ -228,5 +236,95 @@ func (j *JobService) EnqueueAllReadyJobs() {
 	}
 }
 
-// func (j *JobService) GetJobDetailsWithId()
-// func (j *JobService) UpdateJobStatus(Takes id as a parameter)
+// TODO : These functions should be implemented for the dashboard
+// func (j *JobService) GetJobStatusWithId()
+// func (j *JobService)
+// func (j *JobService) GetAllRunningJobs()
+// func (j *JobService) GetAllJobs()
+// func (j *JobService) GetAllFailedJobs()
+// func (j *JobService) GetAllCompletedJobs()
+
+func (j *JobService) UpdateJobStatus(ctx context.Context, req *pb.UpdateJobStatusRequest) (*pb.UpdateJobStatusResponse, error) {
+	ctx1, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	tx, err := j.dbpool.Begin(ctx1)
+	if err != nil {
+		log.Printf("Unable to start transaction due to error : %v", err)
+		return &pb.UpdateJobStatusResponse{
+			StatusCode: common.UPDATE_JOB_STATUS_FAILURE,
+		}, err
+	}
+
+	defer func() {
+		if err := tx.Rollback(ctx1); err != nil && err.Error() != "tx is closed" {
+			log.Printf("Unable to create a rollback due to %v", err)
+		}
+	}()
+
+	var RequestStatusCode int32 = req.GetStatusCode()
+
+	if RequestStatusCode == common.SUCCESS {
+		if _, err := tx.Exec(ctx1, `UPDATE jobs SET status = $1, completed_at = NOW() WHERE id = $2`, common.SUCCESS, req.GetId()); err != nil {
+			log.Printf("Error Executing the Sql statement with err : %v", err)
+			return &pb.UpdateJobStatusResponse{
+				StatusCode: common.UPDATE_JOB_STATUS_FAILURE,
+			}, err
+		}
+	} else if RequestStatusCode == common.FAILURE {
+		// This particular job Could not be completed due to an error so It should Go into blocked state for greater observability
+		if _, err := tx.Exec(ctx1, `UPDATE jobs SET status = $1, failed_at = NOW() WHERE id = $2`, common.BLOCKED_STATE, req.GetId()); err != nil {
+			log.Printf("Error Executing the Sql statement with err : %v", err)
+			return &pb.UpdateJobStatusResponse{
+				StatusCode: common.UPDATE_JOB_STATUS_FAILURE,
+			}, err
+		}
+	}
+
+	if err := tx.Commit(ctx); err != nil {
+		log.Println("Unable to commit transaction")
+	}
+
+	return &pb.UpdateJobStatusResponse{
+		StatusCode: common.UPDATE_JOB_STATUS_SUCCESS,
+	}, nil
+}
+
+// This function is for the dashboard or monitor
+func (j *JobService) TriggerJobReRun(ctx context.Context, req *pb.TriggerReRunRequest) (*pb.TriggerReRunResponse, error) {
+	ctx1, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	tx, err := j.dbpool.Begin(ctx1)
+	if err != nil {
+		log.Printf("Unable to start transaction due to error : %v", err)
+		return &pb.TriggerReRunResponse{
+			StatusCode: common.UPDATE_JOB_STATUS_FAILURE,
+		}, err
+	}
+
+	defer func() {
+		if err := tx.Rollback(ctx1); err != nil && err.Error() != "tx is closed" {
+			log.Printf("Unable to create a rollback due to %v", err)
+		}
+	}()
+	requestId := req.GetId()
+	if _, err := tx.Exec(ctx1, `UPDATE jobs SET status = $1, picked_at = NULL WHERE id = $2`, common.JOB_READY_TO_RUN, requestId); err != nil {
+		log.Printf("The error is : %v", err)
+		return &pb.TriggerReRunResponse{
+			StatusCode: common.UPDATE_JOB_STATUS_FAILURE,
+		}, err
+	}
+	if err := tx.Commit(ctx); err != nil {
+		log.Println("Unable to commit transaction")
+	}
+
+	return &pb.TriggerReRunResponse{
+		StatusCode: common.UPDATE_JOB_STATUS_SUCCESS,
+	}, nil
+}
+
+// This function is to get the particular job details with an Id provided
+func (j *JobService) GetJobStatusWithId(ctx context.Context) {
+
+}
