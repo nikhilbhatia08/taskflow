@@ -18,7 +18,7 @@ type Job struct {
 
 type RunConfigurations struct {
 	QueueName string
-	handler   func(context.Context, *Job) error
+	Handler   func(context.Context, *Job) error
 }
 
 type CreateJobRequest struct {
