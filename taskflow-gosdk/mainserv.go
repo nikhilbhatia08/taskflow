@@ -46,7 +46,7 @@ func (sdk *ClientConnection) Run(runConfig *RunConfigurations) error {
 		}
 
 		if job.Id != QUEUE_IS_EMPTY {
-			err := runConfig.handler(context.Background(), &Job{
+			err := runConfig.Handler(context.Background(), &Job{
 				Id:      job.GetId(),
 				Payload: job.GetPayload(),
 			})
