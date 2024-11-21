@@ -239,7 +239,7 @@ func (j *JobService) EnqueueAllReadyJobs() {
 }
 
 // TODO : These functions should be implemented for the dashboard
-// func (j *JobService) GetJobStatusWithId()
+// func (j *JobService) GetJobStatusWithId()  //completed
 // func (j *JobService)
 // func (j *JobService) GetAllRunningJobs()
 // func (j *JobService) GetAllJobs()
