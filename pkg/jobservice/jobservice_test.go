@@ -5,9 +5,7 @@ import (
 	"testing"
 	"time"
 
-	pb "github.com/nikhilbhatia08/taskflow/generatedproto"
 	"github.com/nikhilbhatia08/taskflow/pkg/taskflow"
-	"google.golang.org/grpc"
 )
 
 // TODO : While running the tests start the cluster automatically
@@ -33,12 +31,5 @@ func JobCreationTest(t *testing.T) {
 		resp := taskflowJobCreator.NewTask(ctx, task)
 		createdIds = append(createdIds, resp.Id)
 	}
-	conn, err := grpc.Dial("localhost:9002", grpc.WithInsecure())
-	if err != nil {
-		t.Fatalf("There was no error expected but got error %v", err)
-	}
-	defer conn.Close()
-
-	client := pb.NewQueueServiceClient(conn)
 
 }

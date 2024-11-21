@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 const headings = ["Queue", "State", "Memory Usage"];
 
@@ -45,19 +46,21 @@ function QueueCard() {
                 key={idx}
                 className="text-sm border-x hover:bg-gray-50 border-gray-300 border-t justify-center"
               >
-                {/* {row.map((data, idx) => {
+                <Link to={`/Queues/${row.Name}`}>
+                  {/* {row.map((data, idx) => {
                   return ( */}
-                <td key={idx} className="px-10 text-center py-4 font-mono">
-                  {row?.Name}
-                </td>
-                <td key={idx} className="px-10 text-center py-4 font-mono">
-                  {row?.Status}
-                </td>
-                <td key={idx} className="px-10 text-center py-4 font-mono">
-                  {row?.MessageUsage}
-                </td>
-                {/* );
+                  <td key={idx} className="px-10 text-center py-4 font-mono">
+                    {row?.Name}
+                  </td>
+                  <td key={idx} className="px-10 text-center py-4 font-mono">
+                    {row?.Status}
+                  </td>
+                  <td key={idx} className="px-10 text-center py-4 font-mono">
+                    {row?.MessageUsage}
+                  </td>
+                  {/* );
                 })} */}
+                </Link>
               </tr>
             );
           })}

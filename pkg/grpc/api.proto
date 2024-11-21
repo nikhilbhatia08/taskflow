@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+import "google/protobuf/timestamp.proto";
+
 package grpc;
 
 option go_package = "/";
@@ -19,6 +21,26 @@ service JobService {
     rpc UpdateJobStatus(UpdateJobStatusRequest) returns (UpdateJobStatusResponse) {}
     rpc TriggerJobReRun(TriggerReRunRequest) returns (TriggerReRunResponse) {}
     rpc GetJobStatusWithId(GetJobStatusWithIdRequest) returns (GetJobStatusWithIdResponse) {}
+    rpc GetAllJobsOfParticularTaskQueue(GetAllJobsOfParticularTaskQueueRequest) returns (GetAllJobsOfParticularTaskQueueResponse) {}
+}
+
+message GetAllJobsOfParticularTaskQueueRequest {
+    string QueueName = 1;
+}
+
+message JobInformation {
+    string Id = 1;
+    string QueueName = 2;
+    string Payload = 3;
+    google.protobuf.Timestamp Picked_at = 4;
+    google.protobuf.Timestamp Completed_at = 5;
+    google.protobuf.Timestamp Failed_at = 6;
+    int32 Retries = 7;
+    int32 Status = 8;
+}
+
+message GetAllJobsOfParticularTaskQueueResponse {
+    repeated JobInformation JobInfo = 1;
 }
 
 message AllQueuesInfoRequest {}
@@ -39,7 +61,7 @@ message GetJobStatusWithIdRequest {
 }
 
 message GetJobStatusWithIdResponse {
-
+    JobInformation JobInfo = 1;
 }
 
 message TriggerReRunRequest {
@@ -83,8 +105,8 @@ message DequeueTaskResponse {
 
 message EnqueueTaskRequest {
     string Id = 1;
-    string queueName = 2;
-    string payload = 3; // this is a json payload
+    string QueueName = 2;
+    string Payload = 3; // this is a json payload
 }
 
 message EnqueueTaskResponse {

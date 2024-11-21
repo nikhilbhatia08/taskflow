@@ -12,6 +12,8 @@ import (
 	"google.golang.org/grpc"
 )
 
+// I have to reimplement this fucking thing again
+
 var (
 	SUCCESS int32 = 200
 	FAILURE int32 = 420
@@ -198,6 +200,31 @@ func (w *WorkerClient) TriggerReRun(id string) {
 
 	log.Println(resp)
 	log.Println(err)
+}
+
+// Given the Id parameter It gets the job status of that id
+// func (w *WorkerClient) GetJobStatus
+
+// Given the name of the task queue It returns the number of jobs in a task queue
+func (w *WorkerClient) GetJobsOfTaskQueue(queueName string) ([]*pb.JobInformation, error) {
+	jobsOfTaskQueue := []*pb.JobInformation{}
+	conn, err := grpc.Dial(w.hostString, grpc.WithInsecure())
+	if err != nil {
+		log.Printf("Unable to connect to the server : %v", err)
+		return jobsOfTaskQueue, err
+	}
+	defer conn.Close()
+
+	client := pb.NewJobServiceClient(conn)
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	resp, err := client.GetAllJobsOfParticularTaskQueue(ctx, &pb.GetAllJobsOfParticularTaskQueueRequest{
+		QueueName: queueName,
+	})
+
+	jobsOfTaskQueue = resp.JobInfo
+	return jobsOfTaskQueue, nil
 }
 
 func (g *gRPCInfo) hehe() {

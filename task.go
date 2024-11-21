@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"log"
+	"time"
 
 	"github.com/nikhilbhatia08/taskflow/pkg/taskflow"
 )
@@ -33,37 +34,37 @@ type Job struct {
 }
 
 func main() {
-	// taskflow1, err := taskflow.Create("localhost:9003")
-	// // The place where the user has to dial
-	// // The queue that he should dial
-	// //
-	// if err != nil {
-	// 	log.Fatalf("The error : %v", err)
-	// }
+	taskflow1, err := taskflow.Create("localhost:9003")
+	// The place where the user has to dial
+	// The queue that he should dial
+	//
+	if err != nil {
+		log.Fatalf("The error : %v", err)
+	}
 
-	// ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	// defer cancel()
-	// jsonData := `{
-	// 	"name": "Nikhil Bhatia",
-	// 	"age": 15,
-	// 	"hobbies": {
-	// 		"Tennis": 1,
-	// 		"football": 2
-	// 	}
-	// }`
-	// for i := 0; i < 10; i++ {
-	// 	task := taskflow.CreateJobRequest{
-	// 		QueueName: "default",
-	// 		Payload:   string(jsonData),
-	// 		Retries:   5,
-	// 	}
-	// 	res := taskflow1.NewTask(ctx, task)
-	// 	log.Println(res)
-	// }
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	jsonData := `{
+		"name": "Nikhil Bhatia",
+		"age": 15,
+		"hobbies": {
+			"Tennis": 1,
+			"football": 2
+		}
+	}`
+	for i := 0; i < 5000; i++ {
+		task := taskflow.CreateJobRequest{
+			QueueName: "default",
+			Payload:   string(jsonData),
+			Retries:   5,
+		}
+		res := taskflow1.NewTask(ctx, &task)
+		log.Println(res)
+	}
 
-	worker := taskflow.CreateWorkerClient("localhost:9002", "default", ExecuteJob)
-	// worker.TriggerReRun("1c6becf1-9a86-4908-b6fd-e0e40bb0f736")
-	worker.Run()
+	// worker := taskflow.CreateWorkerClient("localhost:9002", "default", ExecuteJob)
+	// // worker.TriggerReRun("1c6becf1-9a86-4908-b6fd-e0e40bb0f736")
+	// worker.Run()
 }
 
 func ExecuteJob(ctx context.Context, job *taskflow.Job) (*taskflow.ExecutionStatus, error) {

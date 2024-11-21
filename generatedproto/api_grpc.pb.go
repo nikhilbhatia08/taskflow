@@ -299,10 +299,11 @@ var QueueService_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	JobService_CreateJob_FullMethodName          = "/grpc.JobService/CreateJob"
-	JobService_UpdateJobStatus_FullMethodName    = "/grpc.JobService/UpdateJobStatus"
-	JobService_TriggerJobReRun_FullMethodName    = "/grpc.JobService/TriggerJobReRun"
-	JobService_GetJobStatusWithId_FullMethodName = "/grpc.JobService/GetJobStatusWithId"
+	JobService_CreateJob_FullMethodName                       = "/grpc.JobService/CreateJob"
+	JobService_UpdateJobStatus_FullMethodName                 = "/grpc.JobService/UpdateJobStatus"
+	JobService_TriggerJobReRun_FullMethodName                 = "/grpc.JobService/TriggerJobReRun"
+	JobService_GetJobStatusWithId_FullMethodName              = "/grpc.JobService/GetJobStatusWithId"
+	JobService_GetAllJobsOfParticularTaskQueue_FullMethodName = "/grpc.JobService/GetAllJobsOfParticularTaskQueue"
 )
 
 // JobServiceClient is the client API for JobService service.
@@ -313,6 +314,7 @@ type JobServiceClient interface {
 	UpdateJobStatus(ctx context.Context, in *UpdateJobStatusRequest, opts ...grpc.CallOption) (*UpdateJobStatusResponse, error)
 	TriggerJobReRun(ctx context.Context, in *TriggerReRunRequest, opts ...grpc.CallOption) (*TriggerReRunResponse, error)
 	GetJobStatusWithId(ctx context.Context, in *GetJobStatusWithIdRequest, opts ...grpc.CallOption) (*GetJobStatusWithIdResponse, error)
+	GetAllJobsOfParticularTaskQueue(ctx context.Context, in *GetAllJobsOfParticularTaskQueueRequest, opts ...grpc.CallOption) (*GetAllJobsOfParticularTaskQueueResponse, error)
 }
 
 type jobServiceClient struct {
@@ -363,6 +365,16 @@ func (c *jobServiceClient) GetJobStatusWithId(ctx context.Context, in *GetJobSta
 	return out, nil
 }
 
+func (c *jobServiceClient) GetAllJobsOfParticularTaskQueue(ctx context.Context, in *GetAllJobsOfParticularTaskQueueRequest, opts ...grpc.CallOption) (*GetAllJobsOfParticularTaskQueueResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetAllJobsOfParticularTaskQueueResponse)
+	err := c.cc.Invoke(ctx, JobService_GetAllJobsOfParticularTaskQueue_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // JobServiceServer is the server API for JobService service.
 // All implementations must embed UnimplementedJobServiceServer
 // for forward compatibility.
@@ -371,6 +383,7 @@ type JobServiceServer interface {
 	UpdateJobStatus(context.Context, *UpdateJobStatusRequest) (*UpdateJobStatusResponse, error)
 	TriggerJobReRun(context.Context, *TriggerReRunRequest) (*TriggerReRunResponse, error)
 	GetJobStatusWithId(context.Context, *GetJobStatusWithIdRequest) (*GetJobStatusWithIdResponse, error)
+	GetAllJobsOfParticularTaskQueue(context.Context, *GetAllJobsOfParticularTaskQueueRequest) (*GetAllJobsOfParticularTaskQueueResponse, error)
 	mustEmbedUnimplementedJobServiceServer()
 }
 
@@ -392,6 +405,9 @@ func (UnimplementedJobServiceServer) TriggerJobReRun(context.Context, *TriggerRe
 }
 func (UnimplementedJobServiceServer) GetJobStatusWithId(context.Context, *GetJobStatusWithIdRequest) (*GetJobStatusWithIdResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetJobStatusWithId not implemented")
+}
+func (UnimplementedJobServiceServer) GetAllJobsOfParticularTaskQueue(context.Context, *GetAllJobsOfParticularTaskQueueRequest) (*GetAllJobsOfParticularTaskQueueResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllJobsOfParticularTaskQueue not implemented")
 }
 func (UnimplementedJobServiceServer) mustEmbedUnimplementedJobServiceServer() {}
 func (UnimplementedJobServiceServer) testEmbeddedByValue()                    {}
@@ -486,6 +502,24 @@ func _JobService_GetJobStatusWithId_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _JobService_GetAllJobsOfParticularTaskQueue_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAllJobsOfParticularTaskQueueRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(JobServiceServer).GetAllJobsOfParticularTaskQueue(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: JobService_GetAllJobsOfParticularTaskQueue_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(JobServiceServer).GetAllJobsOfParticularTaskQueue(ctx, req.(*GetAllJobsOfParticularTaskQueueRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // JobService_ServiceDesc is the grpc.ServiceDesc for JobService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -508,6 +542,10 @@ var JobService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetJobStatusWithId",
 			Handler:    _JobService_GetJobStatusWithId_Handler,
+		},
+		{
+			MethodName: "GetAllJobsOfParticularTaskQueue",
+			Handler:    _JobService_GetAllJobsOfParticularTaskQueue_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
