@@ -62,7 +62,6 @@ func (sdk *ClientConnection) Run(runConfig *RunConfigurations) error {
 				})
 			}
 		}
-		time.Sleep(1 * time.Second)
 	}
 
 	return sdk.AwaitShutdown()
