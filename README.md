@@ -7,7 +7,7 @@
 TaskFlow is an efficient task scheduler which is used to schedule jobs and tasks and multiple workers can pick those tasks and execute them
 
 ## Usage
-```
+```go
 package tasks
 
 import (
