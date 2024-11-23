@@ -7,6 +7,12 @@
 TaskFlow is an efficient task scheduler which is used to schedule jobs and tasks and multiple workers can pick those tasks and execute them
 
 ## Usage
+
+Import the taskflow-gosdk:
+```sh
+go get github.com/nikhilbhatia08/taskflow/taskflow-gosdk
+```
+
 ```go
 package tasks
 
@@ -43,6 +49,45 @@ func EmailDelivery() error {
 		Retries: 5,
 	})
 	return nil
+}
+```
+
+Create a worker and start executing the jobs:
+```go
+package tasks
+
+import (
+	"context"
+	"encoding/json"
+	"log"
+	"fmt"
+	"time"
+
+	taskflowgosdk "github.com/nikhilbhatia08/taskflow/taskflow-gosdk"
+)
+
+type EmailPayload struct {
+	EmailSenderId string
+	EmailRecieverId string
+	EmailBody string
+}
+
+// Write a function to create a worker to poll to the task queue and execute the jobs
+func EmailWorker() error {
+	worker, err := taskflowgosdk.NewServer("localhost:9003", "localhost:9002") // The configurations of the jobservice and the queueservice
+	if err != nil {
+		return err
+	}
+
+	worker.Run(&taskflowgosdk.RunConfigurations{
+		QueueName: "EmailQueue",
+		Handler: EmailDeliveryHandler,
+	})
+	return nil
+}
+
+func EmailDeliveryHandler(ctx context.Context, emailJob *taskflowgosdk.Job) error {
+	// Write the job handler logic
 }
 ```
 
