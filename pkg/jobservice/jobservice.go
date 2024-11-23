@@ -147,7 +147,7 @@ func (j *JobService) CreateJob(ctx context.Context, req *pb.CreateJobRequest) (*
 }
 
 func (j *JobService) ScanDatabaseAndEnqueueTasks() {
-	ticker := time.NewTicker(10 * time.Second)
+	ticker := time.NewTicker(1 * time.Second)
 	defer ticker.Stop()
 
 	for {

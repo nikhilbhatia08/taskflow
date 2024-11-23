@@ -1,5 +1,6 @@
 # TaskFlow: Task scheduler in Go
 
+![TaskFlow Hero](assets/jobexecution.png)
 ![TaskFlow Hero](assets/taskflow.png#gh-light-mode-only)
 ![TaskFlow Hero](assets/taskflowdark.png#gh-dark-mode-only)
 
