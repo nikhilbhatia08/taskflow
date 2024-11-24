@@ -22,15 +22,16 @@ func (sdk *ClientConnection) NewJob(req *CreateJobRequest) (string, error) {
 	return response.GetId(), nil
 }
 
+// THIS FUNCTION SHOULD BE RE WRITTEN
 // The function takes the queuename and returns all the jobs running, executed and blocked in an array
-func (sdk *ClientConnection) GetAllJobsOfTaskQueue(QueueName string) ([]*pb.JobInformation, error) {
-	response, err := sdk.JobServiceClient.GetAllJobsOfParticularTaskQueue(context.Background(), &pb.GetAllJobsOfParticularTaskQueueRequest{
-		QueueName: QueueName,
-	})
-	if err != nil {
-		log.Printf("Error Fetching all the jobs of a queue with error %v", err)
-		return nil, err
-	}
+// func (sdk *ClientConnection) GetAllJobsOfTaskQueue(QueueName string) ([]*pb.JobInformation, error) {
+// 	response, err := sdk.JobServiceClient.GetAllJobsOfParticularTaskQueue(context.Background(), &pb.GetAllJobsOfParticularTaskQueueRequest{
+// 		QueueName: QueueName,
+// 	})
+// 	if err != nil {
+// 		log.Printf("Error Fetching all the jobs of a queue with error %v", err)
+// 		return nil, err
+// 	}
 
-	return response.JobInfo, nil
-}
+// 	return response.JobInfo, nil
+// }

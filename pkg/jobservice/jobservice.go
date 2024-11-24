@@ -32,6 +32,7 @@ type JobService struct {
 	pb.UnimplementedJobServiceServer
 	serverPort         string
 	queueServiceHost   string
+	queueServiceClient pb.QueueServiceClient
 	listener           net.Listener
 	gRPCServer         *grpc.Server
 	dbConnectionString string
@@ -49,9 +50,15 @@ type JobInfo struct {
 
 func NewJobServiceServer(port string, dbConnectionString string, queueServiceHost string) *JobService {
 	ctx, cancel := context.WithCancel(context.Background())
+	queueServiceClient, err := grpc.Dial(queueServiceHost, grpc.WithInsecure())
+	if err != nil {
+		log.Printf("There was error connecting to the queue Service %v", err)
+		return nil
+	}
 	return &JobService{
 		serverPort:         port,
 		dbConnectionString: dbConnectionString,
+		queueServiceClient: pb.NewQueueServiceClient(queueServiceClient),
 		queueServiceHost:   queueServiceHost,
 		ctx:                ctx,
 		cancel:             cancel,
@@ -124,7 +131,7 @@ func (j *JobService) CreateJob(ctx context.Context, req *pb.CreateJobRequest) (*
 	// TODO : Need to check for the proper values of retries that means it should not be negative and not more that INT_MAX
 
 	uuidString := uuid.New().String()
-	_, err = tx.Exec(ctx, `INSERT INTO jobs (id, queuename, payload, retries, maxretries, status) VALUES ($1, $2, $3, $4, $5, $6)`, uuidString, queueName, payload, 0, retries, 1)
+	_, err = tx.Exec(ctx, `INSERT INTO jobs (id, queuename, payload, retries, maxretries, status) VALUES ($1, $2, $3, $4, $5, $6)`, uuidString, queueName, payload, 0, retries, common.JOB_SENT_TO_QUEUE)
 	if err != nil {
 		log.Printf("The sql statement could not be executed due to an error : %v", err)
 		return &pb.CreateJobResponse{
@@ -132,6 +139,25 @@ func (j *JobService) CreateJob(ctx context.Context, req *pb.CreateJobRequest) (*
 			Status: "Failed to Create Job",
 		}, err
 	}
+
+	resp, err := j.queueServiceClient.EnqueueTask(ctx, &pb.EnqueueTaskRequest{
+		Id:        uuidString,
+		QueueName: queueName,
+		Payload:   payload,
+	})
+
+	if resp.Status != "Success" {
+		if _, err := tx.Exec(ctx, `UPDATE jobs SET status = $1 WHERE id = $2`, common.BLOCKED_STATE, uuidString); err != nil {
+			log.Printf("Failed to update task %v with error : %v", uuidString, err)
+			return &pb.CreateJobResponse{}, err
+		}
+	} else {
+		if _, err := tx.Exec(ctx, `UPDATE jobs SET status = $1, picked_at = NOW() WHERE id = $2`, common.JOB_SENT_TO_QUEUE, uuidString); err != nil {
+			log.Printf("failed to update task %v with error %v:", uuidString, err)
+			return &pb.CreateJobResponse{}, err
+		}
+	}
+
 	err = tx.Commit(ctx)
 	if err != nil {
 		log.Printf("The sql statement could not be commited : %v", err)
@@ -333,6 +359,8 @@ func (j *JobService) TriggerJobReRun(ctx context.Context, req *pb.TriggerReRunRe
 // }
 
 // This function is to be called when we want all jobs from a particular task-queue
+// This is redundant and should not be used
+// THIS FUNCTION SHOULD NOT BE USED AND REMOVED
 func (j *JobService) GetAllJobsOfParticularTaskQueue(ctx context.Context, req *pb.GetAllJobsOfParticularTaskQueueRequest) (*pb.GetAllJobsOfParticularTaskQueueResponse, error) {
 	ctx1, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
