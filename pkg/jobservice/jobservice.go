@@ -320,6 +320,7 @@ func (j *JobService) UpdateJobStatus(ctx context.Context, req *pb.UpdateJobStatu
 }
 
 // This function is for the dashboard or monitor
+// TODO : There is something wrong with this function and needs to be changed
 func (j *JobService) TriggerJobReRun(ctx context.Context, req *pb.TriggerReRunRequest) (*pb.TriggerReRunResponse, error) {
 	ctx1, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
@@ -361,6 +362,8 @@ func (j *JobService) TriggerJobReRun(ctx context.Context, req *pb.TriggerReRunRe
 // This function is to be called when we want all jobs from a particular task-queue
 // This is redundant and should not be used
 // THIS FUNCTION SHOULD NOT BE USED AND REMOVED
+// We need to paginate the data
+// This works fine now
 func (j *JobService) GetAllJobsOfParticularTaskQueue(ctx context.Context, req *pb.GetAllJobsOfParticularTaskQueueRequest) (*pb.GetAllJobsOfParticularTaskQueueResponse, error) {
 	ctx1, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
@@ -407,8 +410,24 @@ func (j *JobService) GetAllJobsOfParticularTaskQueue(ctx context.Context, req *p
 		})
 	}
 
+	start := (req.GetPage() - 1) * req.GetPageSize()
+	end := start + req.GetPageSize()
+	if start > int32(len(responseJobInformation)) {
+		return &pb.GetAllJobsOfParticularTaskQueueResponse{
+			JobInfo:     []*pb.JobInformation{},
+			CurrentPage: req.Page,
+			TotalPages:  int32(len(responseJobInformation))/req.GetPageSize() + 1,
+		}, nil
+	}
+
+	if end > int32(len(responseJobInformation)) {
+		end = int32(len(responseJobInformation))
+	}
+
 	return &pb.GetAllJobsOfParticularTaskQueueResponse{
-		JobInfo: responseJobInformation,
+		JobInfo:     responseJobInformation[start:end],
+		CurrentPage: req.GetPage(),
+		TotalPages:  int32(len(responseJobInformation))/req.GetPageSize() + 1,
 	}, nil
 }
 

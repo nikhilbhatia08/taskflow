@@ -26,6 +26,8 @@ service JobService {
 
 message GetAllJobsOfParticularTaskQueueRequest {
     string QueueName = 1;
+    int32 Page = 2;
+    int32 PageSize = 3;
 }
 
 message JobInformation {
@@ -41,6 +43,8 @@ message JobInformation {
 
 message GetAllJobsOfParticularTaskQueueResponse {
     repeated JobInformation JobInfo = 1;
+    int32 CurrentPage = 2;
+    int32 TotalPages = 3;
 }
 
 message AllQueuesInfoRequest {}

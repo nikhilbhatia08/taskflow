@@ -26,3 +26,8 @@ type CreateJobRequest struct {
 	Payload   string
 	Retries   int32
 }
+
+type AllTasksOfJobQueuePaginatedResponse struct {
+	JobInformation []*pb.JobInformation
+	TotalPages     int32
+}

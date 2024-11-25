@@ -35,3 +35,23 @@ func (sdk *ClientConnection) NewJob(req *CreateJobRequest) (string, error) {
 
 // 	return response.JobInfo, nil
 // }
+
+// This function is re-written and needs to have the pagination details
+// TODO : Need to test this out
+// Usage: Takes QueueName, Page and PageSize as input parameters and Gives array and The total number of pages as response
+func (sdk *ClientConnection) GetAllJobsOfTaskQueue(QueueName string, Page int32, PageSize int32) (*AllTasksOfJobQueuePaginatedResponse, error) {
+	response, err := sdk.JobServiceClient.GetAllJobsOfParticularTaskQueue(context.Background(), &pb.GetAllJobsOfParticularTaskQueueRequest{
+		QueueName: QueueName,
+		Page:      Page,
+		PageSize:  PageSize,
+	})
+	if err != nil {
+		log.Printf("Error fetching the records of a queue with err : %v", err)
+		return nil, err
+	}
+
+	return &AllTasksOfJobQueuePaginatedResponse{
+		JobInformation: response.JobInfo,
+		TotalPages:     response.TotalPages,
+	}, nil
+}
