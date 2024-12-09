@@ -22,6 +22,19 @@ service JobService {
     rpc TriggerJobReRun(TriggerReRunRequest) returns (TriggerReRunResponse) {}
     rpc GetJobStatusWithId(GetJobStatusWithIdRequest) returns (GetJobStatusWithIdResponse) {}
     rpc GetAllJobsOfParticularTaskQueue(GetAllJobsOfParticularTaskQueueRequest) returns (GetAllJobsOfParticularTaskQueueResponse) {}
+    rpc GetAllRunningJobsOfTaskQueue(GetAllRunningJobsOfTaskQueueRequest) returns (GetAllRunningJobsOfTaskQueueResponse) {}
+}
+
+message GetAllRunningJobsOfTaskQueueRequest {
+    string QueueName = 1;
+    int32 Page = 2;
+    int32 PageSize = 3;
+}
+
+message GetAllRunningJobsOfTaskQueueResponse {
+    repeated JobInformation JobInfo = 1;
+    int32 CurrentPage = 2;
+    int32 TotalPages = 3;
 }
 
 message GetAllJobsOfParticularTaskQueueRequest {

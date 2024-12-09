@@ -19,7 +19,6 @@ func main() {
 	defer conn.Close()
 
 	client := pb.NewJobServiceClient(conn)
-
 	res, err := client.GetAllJobsOfParticularTaskQueue(context.Background(), &pb.GetAllJobsOfParticularTaskQueueRequest{
 		QueueName: "default",
 		Page:      2,

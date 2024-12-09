@@ -153,11 +153,10 @@ func (q *QueueService) EnqueueTask(ctx context.Context, req *pb.EnqueueTaskReque
 	q.mu.Lock()
 	defer q.mu.Unlock()
 
+	// If the queue does not exist then it will create a new queue and enqueue the jobs
 	_, exists := q.queues[req.GetQueueName()]
 	if exists == false {
-		return &pb.EnqueueTaskResponse{
-			Status: "Queue Name provided is not correct and not present",
-		}, nil
+		q.FormQueue(req.GetQueueName())
 	}
 	var task Task
 	task.Id = req.GetId()

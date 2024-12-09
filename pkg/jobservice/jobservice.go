@@ -271,8 +271,9 @@ func (j *JobService) EnqueueAllReadyJobs() {
 // func (j *JobService) GetAllJobs()
 // func (j *JobService) GetAllFailedJobs()
 // func (j *JobService) GetAllCompletedJobs()
-// func (j *JobService) GetAllJobsOfTaskQueue(Queue)
+// func (j *JobService) GetAllJobsOfTaskQueue(Queue) // completed
 
+// TODO : When the job is failed it should not go in the blocked state and should go in failed state to be retried
 func (j *JobService) UpdateJobStatus(ctx context.Context, req *pb.UpdateJobStatusRequest) (*pb.UpdateJobStatusResponse, error) {
 	ctx1, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
@@ -381,6 +382,7 @@ func (j *JobService) GetAllJobsOfParticularTaskQueue(ctx context.Context, req *p
 	}()
 
 	QueueName := req.GetQueueName()
+	// TODO : Get the query where the job which was enqueued latest is to show up
 	rows, err := tx.Query(ctx1, `SELECT id, queuename, payload, status, retries, picked_at, completed_at, failed_at from jobs WHERE queuename = $1`, QueueName)
 	if err != nil {
 		log.Printf("Error querying the jobs ERR : %v", err)
@@ -409,6 +411,8 @@ func (j *JobService) GetAllJobsOfParticularTaskQueue(ctx context.Context, req *p
 			Retries:     retries,
 		})
 	}
+
+	// TODO: Break out of the loop if we get the required rows to optimize the runtime
 
 	start := (req.GetPage() - 1) * req.GetPageSize()
 	end := start + req.GetPageSize()
@@ -458,7 +462,7 @@ func (j *JobService) GetJobStatusWithId(ctx context.Context, req *pb.GetJobStatu
 	for rows.Next() {
 		var id, queuename, payload string
 		var status, retries int32
-		var picked_at, completed_at, failed_at pgtype.Timestamp
+		var picked_at, completed_at, failed_at pgtype.Timestamp // TODO : This can be bundled to type of JobInformation
 		if err := rows.Scan(&id, &queuename, &payload, &status, &retries, &picked_at, &completed_at, &failed_at); err != nil {
 			log.Printf("Error Scanning the rows with error : %v", err)
 			return &pb.GetJobStatusWithIdResponse{}, err
@@ -478,5 +482,71 @@ func (j *JobService) GetJobStatusWithId(ctx context.Context, req *pb.GetJobStatu
 	// If the job information is null
 	return &pb.GetJobStatusWithIdResponse{
 		JobInfo: responseJobInfoWithId,
+	}, nil
+}
+
+func (j *JobService) GetAllRunningJobs(ctx context.Context, req *pb.GetAllRunningJobsOfTaskQueueRequest) (*pb.GetAllRunningJobsOfTaskQueueResponse, error) {
+	ctx1, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	tx, err := j.dbpool.Begin(ctx1)
+	if err != nil {
+		log.Printf("The transaction could not begin due to error %v", err)
+		return &pb.GetAllRunningJobsOfTaskQueueResponse{}, err
+	}
+	defer func() {
+		if err := tx.Rollback(ctx1); err != nil && err.Error() != "tx is closed" {
+			log.Printf("Could not rollback due to : %v", err)
+		}
+	}()
+
+	// common.Job_SENT_TO_QUEUE should be infered as job_RUNNING_STATE
+	rows, err := tx.Query(ctx1, `SELECT id, queuename, payload, status, retries, picked_at, completed_at, failed_at WHERE status = $1`, common.JOB_SENT_TO_QUEUE)
+	if err != nil {
+		log.Printf("There was an error executing the query %v", err)
+		return &pb.GetAllRunningJobsOfTaskQueueResponse{}, err
+	}
+	defer rows.Close()
+	responseJobInformation := []*pb.JobInformation{}
+
+	for rows.Next() {
+		var id, queuename, payload string
+		var status, retries int32
+		var picked_at, completed_at, failed_at pgtype.Timestamp
+		if err := rows.Scan(&id, &queuename, &payload, &status, &retries, &picked_at, &completed_at, &failed_at); err != nil {
+			log.Printf("There was an error scanning the rows %v", err)
+			return &pb.GetAllRunningJobsOfTaskQueueResponse{}, err
+		}
+
+		responseJobInformation = append(responseJobInformation, &pb.JobInformation{
+			Id:          id,
+			QueueName:   queuename,
+			Payload:     payload,
+			PickedAt:    timestamppb.New(picked_at.Time),
+			CompletedAt: timestamppb.New(completed_at.Time),
+			FailedAt:    timestamppb.New(failed_at.Time),
+			Status:      status,
+			Retries:     retries,
+		})
+	}
+
+	start := (req.GetPage() - 1) * req.GetPageSize()
+	end := start + req.GetPageSize()
+	if start > int32(len(responseJobInformation)) {
+		return &pb.GetAllRunningJobsOfTaskQueueResponse{
+			JobInfo:     []*pb.JobInformation{},
+			CurrentPage: req.GetPage(),
+			TotalPages:  int32(len(responseJobInformation))/req.GetPageSize() + 1,
+		}, nil
+	}
+
+	if end > int32(len(responseJobInformation)) {
+		end = int32(len(responseJobInformation))
+	}
+
+	return &pb.GetAllRunningJobsOfTaskQueueResponse{
+		JobInfo:     responseJobInformation,
+		CurrentPage: req.GetPage(),
+		TotalPages:  int32(len(responseJobInformation))/req.GetPageSize() + 1,
 	}, nil
 }

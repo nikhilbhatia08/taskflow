@@ -21,6 +21,128 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type GetAllRunningJobsOfTaskQueueRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	QueueName string `protobuf:"bytes,1,opt,name=QueueName,proto3" json:"QueueName,omitempty"`
+	Page      int32  `protobuf:"varint,2,opt,name=Page,proto3" json:"Page,omitempty"`
+	PageSize  int32  `protobuf:"varint,3,opt,name=PageSize,proto3" json:"PageSize,omitempty"`
+}
+
+func (x *GetAllRunningJobsOfTaskQueueRequest) Reset() {
+	*x = GetAllRunningJobsOfTaskQueueRequest{}
+	mi := &file_api_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetAllRunningJobsOfTaskQueueRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetAllRunningJobsOfTaskQueueRequest) ProtoMessage() {}
+
+func (x *GetAllRunningJobsOfTaskQueueRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetAllRunningJobsOfTaskQueueRequest.ProtoReflect.Descriptor instead.
+func (*GetAllRunningJobsOfTaskQueueRequest) Descriptor() ([]byte, []int) {
+	return file_api_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *GetAllRunningJobsOfTaskQueueRequest) GetQueueName() string {
+	if x != nil {
+		return x.QueueName
+	}
+	return ""
+}
+
+func (x *GetAllRunningJobsOfTaskQueueRequest) GetPage() int32 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+func (x *GetAllRunningJobsOfTaskQueueRequest) GetPageSize() int32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
+type GetAllRunningJobsOfTaskQueueResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	JobInfo     []*JobInformation `protobuf:"bytes,1,rep,name=JobInfo,proto3" json:"JobInfo,omitempty"`
+	CurrentPage int32             `protobuf:"varint,2,opt,name=CurrentPage,proto3" json:"CurrentPage,omitempty"`
+	TotalPages  int32             `protobuf:"varint,3,opt,name=TotalPages,proto3" json:"TotalPages,omitempty"`
+}
+
+func (x *GetAllRunningJobsOfTaskQueueResponse) Reset() {
+	*x = GetAllRunningJobsOfTaskQueueResponse{}
+	mi := &file_api_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetAllRunningJobsOfTaskQueueResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetAllRunningJobsOfTaskQueueResponse) ProtoMessage() {}
+
+func (x *GetAllRunningJobsOfTaskQueueResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_api_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetAllRunningJobsOfTaskQueueResponse.ProtoReflect.Descriptor instead.
+func (*GetAllRunningJobsOfTaskQueueResponse) Descriptor() ([]byte, []int) {
+	return file_api_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *GetAllRunningJobsOfTaskQueueResponse) GetJobInfo() []*JobInformation {
+	if x != nil {
+		return x.JobInfo
+	}
+	return nil
+}
+
+func (x *GetAllRunningJobsOfTaskQueueResponse) GetCurrentPage() int32 {
+	if x != nil {
+		return x.CurrentPage
+	}
+	return 0
+}
+
+func (x *GetAllRunningJobsOfTaskQueueResponse) GetTotalPages() int32 {
+	if x != nil {
+		return x.TotalPages
+	}
+	return 0
+}
+
 type GetAllJobsOfParticularTaskQueueRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -33,7 +155,7 @@ type GetAllJobsOfParticularTaskQueueRequest struct {
 
 func (x *GetAllJobsOfParticularTaskQueueRequest) Reset() {
 	*x = GetAllJobsOfParticularTaskQueueRequest{}
-	mi := &file_api_proto_msgTypes[0]
+	mi := &file_api_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -45,7 +167,7 @@ func (x *GetAllJobsOfParticularTaskQueueRequest) String() string {
 func (*GetAllJobsOfParticularTaskQueueRequest) ProtoMessage() {}
 
 func (x *GetAllJobsOfParticularTaskQueueRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[0]
+	mi := &file_api_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -58,7 +180,7 @@ func (x *GetAllJobsOfParticularTaskQueueRequest) ProtoReflect() protoreflect.Mes
 
 // Deprecated: Use GetAllJobsOfParticularTaskQueueRequest.ProtoReflect.Descriptor instead.
 func (*GetAllJobsOfParticularTaskQueueRequest) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{0}
+	return file_api_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *GetAllJobsOfParticularTaskQueueRequest) GetQueueName() string {
@@ -99,7 +221,7 @@ type JobInformation struct {
 
 func (x *JobInformation) Reset() {
 	*x = JobInformation{}
-	mi := &file_api_proto_msgTypes[1]
+	mi := &file_api_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -111,7 +233,7 @@ func (x *JobInformation) String() string {
 func (*JobInformation) ProtoMessage() {}
 
 func (x *JobInformation) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[1]
+	mi := &file_api_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -124,7 +246,7 @@ func (x *JobInformation) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use JobInformation.ProtoReflect.Descriptor instead.
 func (*JobInformation) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{1}
+	return file_api_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *JobInformation) GetId() string {
@@ -195,7 +317,7 @@ type GetAllJobsOfParticularTaskQueueResponse struct {
 
 func (x *GetAllJobsOfParticularTaskQueueResponse) Reset() {
 	*x = GetAllJobsOfParticularTaskQueueResponse{}
-	mi := &file_api_proto_msgTypes[2]
+	mi := &file_api_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -207,7 +329,7 @@ func (x *GetAllJobsOfParticularTaskQueueResponse) String() string {
 func (*GetAllJobsOfParticularTaskQueueResponse) ProtoMessage() {}
 
 func (x *GetAllJobsOfParticularTaskQueueResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[2]
+	mi := &file_api_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -220,7 +342,7 @@ func (x *GetAllJobsOfParticularTaskQueueResponse) ProtoReflect() protoreflect.Me
 
 // Deprecated: Use GetAllJobsOfParticularTaskQueueResponse.ProtoReflect.Descriptor instead.
 func (*GetAllJobsOfParticularTaskQueueResponse) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{2}
+	return file_api_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *GetAllJobsOfParticularTaskQueueResponse) GetJobInfo() []*JobInformation {
@@ -252,7 +374,7 @@ type AllQueuesInfoRequest struct {
 
 func (x *AllQueuesInfoRequest) Reset() {
 	*x = AllQueuesInfoRequest{}
-	mi := &file_api_proto_msgTypes[3]
+	mi := &file_api_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -264,7 +386,7 @@ func (x *AllQueuesInfoRequest) String() string {
 func (*AllQueuesInfoRequest) ProtoMessage() {}
 
 func (x *AllQueuesInfoRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[3]
+	mi := &file_api_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -277,7 +399,7 @@ func (x *AllQueuesInfoRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AllQueuesInfoRequest.ProtoReflect.Descriptor instead.
 func (*AllQueuesInfoRequest) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{3}
+	return file_api_proto_rawDescGZIP(), []int{5}
 }
 
 type QueueInfo struct {
@@ -293,7 +415,7 @@ type QueueInfo struct {
 
 func (x *QueueInfo) Reset() {
 	*x = QueueInfo{}
-	mi := &file_api_proto_msgTypes[4]
+	mi := &file_api_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -305,7 +427,7 @@ func (x *QueueInfo) String() string {
 func (*QueueInfo) ProtoMessage() {}
 
 func (x *QueueInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[4]
+	mi := &file_api_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -318,7 +440,7 @@ func (x *QueueInfo) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueueInfo.ProtoReflect.Descriptor instead.
 func (*QueueInfo) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{4}
+	return file_api_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *QueueInfo) GetName() string {
@@ -359,7 +481,7 @@ type AllQueuesInfoResponse struct {
 
 func (x *AllQueuesInfoResponse) Reset() {
 	*x = AllQueuesInfoResponse{}
-	mi := &file_api_proto_msgTypes[5]
+	mi := &file_api_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -371,7 +493,7 @@ func (x *AllQueuesInfoResponse) String() string {
 func (*AllQueuesInfoResponse) ProtoMessage() {}
 
 func (x *AllQueuesInfoResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[5]
+	mi := &file_api_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -384,7 +506,7 @@ func (x *AllQueuesInfoResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AllQueuesInfoResponse.ProtoReflect.Descriptor instead.
 func (*AllQueuesInfoResponse) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{5}
+	return file_api_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *AllQueuesInfoResponse) GetAllQueuesInformation() []*QueueInfo {
@@ -404,7 +526,7 @@ type GetJobStatusWithIdRequest struct {
 
 func (x *GetJobStatusWithIdRequest) Reset() {
 	*x = GetJobStatusWithIdRequest{}
-	mi := &file_api_proto_msgTypes[6]
+	mi := &file_api_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -416,7 +538,7 @@ func (x *GetJobStatusWithIdRequest) String() string {
 func (*GetJobStatusWithIdRequest) ProtoMessage() {}
 
 func (x *GetJobStatusWithIdRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[6]
+	mi := &file_api_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -429,7 +551,7 @@ func (x *GetJobStatusWithIdRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetJobStatusWithIdRequest.ProtoReflect.Descriptor instead.
 func (*GetJobStatusWithIdRequest) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{6}
+	return file_api_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *GetJobStatusWithIdRequest) GetId() string {
@@ -449,7 +571,7 @@ type GetJobStatusWithIdResponse struct {
 
 func (x *GetJobStatusWithIdResponse) Reset() {
 	*x = GetJobStatusWithIdResponse{}
-	mi := &file_api_proto_msgTypes[7]
+	mi := &file_api_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -461,7 +583,7 @@ func (x *GetJobStatusWithIdResponse) String() string {
 func (*GetJobStatusWithIdResponse) ProtoMessage() {}
 
 func (x *GetJobStatusWithIdResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[7]
+	mi := &file_api_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -474,7 +596,7 @@ func (x *GetJobStatusWithIdResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetJobStatusWithIdResponse.ProtoReflect.Descriptor instead.
 func (*GetJobStatusWithIdResponse) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{7}
+	return file_api_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *GetJobStatusWithIdResponse) GetJobInfo() *JobInformation {
@@ -494,7 +616,7 @@ type TriggerReRunRequest struct {
 
 func (x *TriggerReRunRequest) Reset() {
 	*x = TriggerReRunRequest{}
-	mi := &file_api_proto_msgTypes[8]
+	mi := &file_api_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -506,7 +628,7 @@ func (x *TriggerReRunRequest) String() string {
 func (*TriggerReRunRequest) ProtoMessage() {}
 
 func (x *TriggerReRunRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[8]
+	mi := &file_api_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -519,7 +641,7 @@ func (x *TriggerReRunRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TriggerReRunRequest.ProtoReflect.Descriptor instead.
 func (*TriggerReRunRequest) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{8}
+	return file_api_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *TriggerReRunRequest) GetId() string {
@@ -539,7 +661,7 @@ type TriggerReRunResponse struct {
 
 func (x *TriggerReRunResponse) Reset() {
 	*x = TriggerReRunResponse{}
-	mi := &file_api_proto_msgTypes[9]
+	mi := &file_api_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -551,7 +673,7 @@ func (x *TriggerReRunResponse) String() string {
 func (*TriggerReRunResponse) ProtoMessage() {}
 
 func (x *TriggerReRunResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[9]
+	mi := &file_api_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -564,7 +686,7 @@ func (x *TriggerReRunResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TriggerReRunResponse.ProtoReflect.Descriptor instead.
 func (*TriggerReRunResponse) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{9}
+	return file_api_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *TriggerReRunResponse) GetStatusCode() int32 {
@@ -585,7 +707,7 @@ type UpdateJobStatusRequest struct {
 
 func (x *UpdateJobStatusRequest) Reset() {
 	*x = UpdateJobStatusRequest{}
-	mi := &file_api_proto_msgTypes[10]
+	mi := &file_api_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -597,7 +719,7 @@ func (x *UpdateJobStatusRequest) String() string {
 func (*UpdateJobStatusRequest) ProtoMessage() {}
 
 func (x *UpdateJobStatusRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[10]
+	mi := &file_api_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -610,7 +732,7 @@ func (x *UpdateJobStatusRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateJobStatusRequest.ProtoReflect.Descriptor instead.
 func (*UpdateJobStatusRequest) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{10}
+	return file_api_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *UpdateJobStatusRequest) GetId() string {
@@ -637,7 +759,7 @@ type UpdateJobStatusResponse struct {
 
 func (x *UpdateJobStatusResponse) Reset() {
 	*x = UpdateJobStatusResponse{}
-	mi := &file_api_proto_msgTypes[11]
+	mi := &file_api_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -649,7 +771,7 @@ func (x *UpdateJobStatusResponse) String() string {
 func (*UpdateJobStatusResponse) ProtoMessage() {}
 
 func (x *UpdateJobStatusResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[11]
+	mi := &file_api_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -662,7 +784,7 @@ func (x *UpdateJobStatusResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateJobStatusResponse.ProtoReflect.Descriptor instead.
 func (*UpdateJobStatusResponse) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{11}
+	return file_api_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *UpdateJobStatusResponse) GetStatusCode() int32 {
@@ -685,7 +807,7 @@ type CreateJobRequest struct {
 
 func (x *CreateJobRequest) Reset() {
 	*x = CreateJobRequest{}
-	mi := &file_api_proto_msgTypes[12]
+	mi := &file_api_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -697,7 +819,7 @@ func (x *CreateJobRequest) String() string {
 func (*CreateJobRequest) ProtoMessage() {}
 
 func (x *CreateJobRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[12]
+	mi := &file_api_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -710,7 +832,7 @@ func (x *CreateJobRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateJobRequest.ProtoReflect.Descriptor instead.
 func (*CreateJobRequest) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{12}
+	return file_api_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *CreateJobRequest) GetId() string {
@@ -752,7 +874,7 @@ type CreateJobResponse struct {
 
 func (x *CreateJobResponse) Reset() {
 	*x = CreateJobResponse{}
-	mi := &file_api_proto_msgTypes[13]
+	mi := &file_api_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -764,7 +886,7 @@ func (x *CreateJobResponse) String() string {
 func (*CreateJobResponse) ProtoMessage() {}
 
 func (x *CreateJobResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[13]
+	mi := &file_api_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -777,7 +899,7 @@ func (x *CreateJobResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateJobResponse.ProtoReflect.Descriptor instead.
 func (*CreateJobResponse) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{13}
+	return file_api_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *CreateJobResponse) GetId() string {
@@ -804,7 +926,7 @@ type DequeueTaskRequest struct {
 
 func (x *DequeueTaskRequest) Reset() {
 	*x = DequeueTaskRequest{}
-	mi := &file_api_proto_msgTypes[14]
+	mi := &file_api_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -816,7 +938,7 @@ func (x *DequeueTaskRequest) String() string {
 func (*DequeueTaskRequest) ProtoMessage() {}
 
 func (x *DequeueTaskRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[14]
+	mi := &file_api_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -829,7 +951,7 @@ func (x *DequeueTaskRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DequeueTaskRequest.ProtoReflect.Descriptor instead.
 func (*DequeueTaskRequest) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{14}
+	return file_api_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *DequeueTaskRequest) GetQueueName() string {
@@ -850,7 +972,7 @@ type DequeueTaskResponse struct {
 
 func (x *DequeueTaskResponse) Reset() {
 	*x = DequeueTaskResponse{}
-	mi := &file_api_proto_msgTypes[15]
+	mi := &file_api_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -862,7 +984,7 @@ func (x *DequeueTaskResponse) String() string {
 func (*DequeueTaskResponse) ProtoMessage() {}
 
 func (x *DequeueTaskResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[15]
+	mi := &file_api_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -875,7 +997,7 @@ func (x *DequeueTaskResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DequeueTaskResponse.ProtoReflect.Descriptor instead.
 func (*DequeueTaskResponse) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{15}
+	return file_api_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *DequeueTaskResponse) GetId() string {
@@ -904,7 +1026,7 @@ type EnqueueTaskRequest struct {
 
 func (x *EnqueueTaskRequest) Reset() {
 	*x = EnqueueTaskRequest{}
-	mi := &file_api_proto_msgTypes[16]
+	mi := &file_api_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -916,7 +1038,7 @@ func (x *EnqueueTaskRequest) String() string {
 func (*EnqueueTaskRequest) ProtoMessage() {}
 
 func (x *EnqueueTaskRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[16]
+	mi := &file_api_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -929,7 +1051,7 @@ func (x *EnqueueTaskRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use EnqueueTaskRequest.ProtoReflect.Descriptor instead.
 func (*EnqueueTaskRequest) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{16}
+	return file_api_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *EnqueueTaskRequest) GetId() string {
@@ -963,7 +1085,7 @@ type EnqueueTaskResponse struct {
 
 func (x *EnqueueTaskResponse) Reset() {
 	*x = EnqueueTaskResponse{}
-	mi := &file_api_proto_msgTypes[17]
+	mi := &file_api_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -975,7 +1097,7 @@ func (x *EnqueueTaskResponse) String() string {
 func (*EnqueueTaskResponse) ProtoMessage() {}
 
 func (x *EnqueueTaskResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[17]
+	mi := &file_api_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -988,7 +1110,7 @@ func (x *EnqueueTaskResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use EnqueueTaskResponse.ProtoReflect.Descriptor instead.
 func (*EnqueueTaskResponse) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{17}
+	return file_api_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *EnqueueTaskResponse) GetStatus() string {
@@ -1009,7 +1131,7 @@ type UpdateTaskStatusRequest struct {
 
 func (x *UpdateTaskStatusRequest) Reset() {
 	*x = UpdateTaskStatusRequest{}
-	mi := &file_api_proto_msgTypes[18]
+	mi := &file_api_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1021,7 +1143,7 @@ func (x *UpdateTaskStatusRequest) String() string {
 func (*UpdateTaskStatusRequest) ProtoMessage() {}
 
 func (x *UpdateTaskStatusRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[18]
+	mi := &file_api_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1034,7 +1156,7 @@ func (x *UpdateTaskStatusRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateTaskStatusRequest.ProtoReflect.Descriptor instead.
 func (*UpdateTaskStatusRequest) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{18}
+	return file_api_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *UpdateTaskStatusRequest) GetTaskId() string {
@@ -1061,7 +1183,7 @@ type UpdateTaskStatusResponse struct {
 
 func (x *UpdateTaskStatusResponse) Reset() {
 	*x = UpdateTaskStatusResponse{}
-	mi := &file_api_proto_msgTypes[19]
+	mi := &file_api_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1073,7 +1195,7 @@ func (x *UpdateTaskStatusResponse) String() string {
 func (*UpdateTaskStatusResponse) ProtoMessage() {}
 
 func (x *UpdateTaskStatusResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[19]
+	mi := &file_api_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1086,7 +1208,7 @@ func (x *UpdateTaskStatusResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateTaskStatusResponse.ProtoReflect.Descriptor instead.
 func (*UpdateTaskStatusResponse) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{19}
+	return file_api_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *UpdateTaskStatusResponse) GetStatus() string {
@@ -1102,7 +1224,24 @@ var file_api_proto_rawDesc = []byte{
 	0x0a, 0x09, 0x61, 0x70, 0x69, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x04, 0x67, 0x72, 0x70,
 	0x63, 0x1a, 0x1f, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62,
 	0x75, 0x66, 0x2f, 0x74, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x2e, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x22, 0x76, 0x0a, 0x26, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x6c, 0x4a, 0x6f, 0x62, 0x73,
+	0x74, 0x6f, 0x22, 0x73, 0x0a, 0x23, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x6c, 0x52, 0x75, 0x6e, 0x6e,
+	0x69, 0x6e, 0x67, 0x4a, 0x6f, 0x62, 0x73, 0x4f, 0x66, 0x54, 0x61, 0x73, 0x6b, 0x51, 0x75, 0x65,
+	0x75, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1c, 0x0a, 0x09, 0x51, 0x75, 0x65,
+	0x75, 0x65, 0x4e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x51, 0x75,
+	0x65, 0x75, 0x65, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x50, 0x61, 0x67, 0x65, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x05, 0x52, 0x04, 0x50, 0x61, 0x67, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x50,
+	0x61, 0x67, 0x65, 0x53, 0x69, 0x7a, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x05, 0x52, 0x08, 0x50,
+	0x61, 0x67, 0x65, 0x53, 0x69, 0x7a, 0x65, 0x22, 0x98, 0x01, 0x0a, 0x24, 0x47, 0x65, 0x74, 0x41,
+	0x6c, 0x6c, 0x52, 0x75, 0x6e, 0x6e, 0x69, 0x6e, 0x67, 0x4a, 0x6f, 0x62, 0x73, 0x4f, 0x66, 0x54,
+	0x61, 0x73, 0x6b, 0x51, 0x75, 0x65, 0x75, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x12, 0x2e, 0x0a, 0x07, 0x4a, 0x6f, 0x62, 0x49, 0x6e, 0x66, 0x6f, 0x18, 0x01, 0x20, 0x03, 0x28,
+	0x0b, 0x32, 0x14, 0x2e, 0x67, 0x72, 0x70, 0x63, 0x2e, 0x4a, 0x6f, 0x62, 0x49, 0x6e, 0x66, 0x6f,
+	0x72, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x07, 0x4a, 0x6f, 0x62, 0x49, 0x6e, 0x66, 0x6f,
+	0x12, 0x20, 0x0a, 0x0b, 0x43, 0x75, 0x72, 0x72, 0x65, 0x6e, 0x74, 0x50, 0x61, 0x67, 0x65, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x05, 0x52, 0x0b, 0x43, 0x75, 0x72, 0x72, 0x65, 0x6e, 0x74, 0x50, 0x61,
+	0x67, 0x65, 0x12, 0x1e, 0x0a, 0x0a, 0x54, 0x6f, 0x74, 0x61, 0x6c, 0x50, 0x61, 0x67, 0x65, 0x73,
+	0x18, 0x03, 0x20, 0x01, 0x28, 0x05, 0x52, 0x0a, 0x54, 0x6f, 0x74, 0x61, 0x6c, 0x50, 0x61, 0x67,
+	0x65, 0x73, 0x22, 0x76, 0x0a, 0x26, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x6c, 0x4a, 0x6f, 0x62, 0x73,
 	0x4f, 0x66, 0x50, 0x61, 0x72, 0x74, 0x69, 0x63, 0x75, 0x6c, 0x61, 0x72, 0x54, 0x61, 0x73, 0x6b,
 	0x51, 0x75, 0x65, 0x75, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1c, 0x0a, 0x09,
 	0x51, 0x75, 0x65, 0x75, 0x65, 0x4e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
@@ -1232,7 +1371,7 @@ var file_api_proto_rawDesc = []byte{
 	0x41, 0x6c, 0x6c, 0x51, 0x75, 0x65, 0x75, 0x65, 0x73, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x65, 0x71,
 	0x75, 0x65, 0x73, 0x74, 0x1a, 0x1b, 0x2e, 0x67, 0x72, 0x70, 0x63, 0x2e, 0x41, 0x6c, 0x6c, 0x51,
 	0x75, 0x65, 0x75, 0x65, 0x73, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x22, 0x00, 0x32, 0xc8, 0x03, 0x0a, 0x0a, 0x4a, 0x6f, 0x62, 0x53, 0x65, 0x72, 0x76, 0x69,
+	0x65, 0x22, 0x00, 0x32, 0xc1, 0x04, 0x0a, 0x0a, 0x4a, 0x6f, 0x62, 0x53, 0x65, 0x72, 0x76, 0x69,
 	0x63, 0x65, 0x12, 0x3e, 0x0a, 0x09, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x4a, 0x6f, 0x62, 0x12,
 	0x16, 0x2e, 0x67, 0x72, 0x70, 0x63, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x4a, 0x6f, 0x62,
 	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x17, 0x2e, 0x67, 0x72, 0x70, 0x63, 0x2e, 0x43,
@@ -1260,8 +1399,16 @@ var file_api_proto_rawDesc = []byte{
 	0x6b, 0x51, 0x75, 0x65, 0x75, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x2d, 0x2e,
 	0x67, 0x72, 0x70, 0x63, 0x2e, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x6c, 0x4a, 0x6f, 0x62, 0x73, 0x4f,
 	0x66, 0x50, 0x61, 0x72, 0x74, 0x69, 0x63, 0x75, 0x6c, 0x61, 0x72, 0x54, 0x61, 0x73, 0x6b, 0x51,
-	0x75, 0x65, 0x75, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x42, 0x03,
-	0x5a, 0x01, 0x2f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x75, 0x65, 0x75, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x77,
+	0x0a, 0x1c, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x6c, 0x52, 0x75, 0x6e, 0x6e, 0x69, 0x6e, 0x67, 0x4a,
+	0x6f, 0x62, 0x73, 0x4f, 0x66, 0x54, 0x61, 0x73, 0x6b, 0x51, 0x75, 0x65, 0x75, 0x65, 0x12, 0x29,
+	0x2e, 0x67, 0x72, 0x70, 0x63, 0x2e, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x6c, 0x52, 0x75, 0x6e, 0x6e,
+	0x69, 0x6e, 0x67, 0x4a, 0x6f, 0x62, 0x73, 0x4f, 0x66, 0x54, 0x61, 0x73, 0x6b, 0x51, 0x75, 0x65,
+	0x75, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x2a, 0x2e, 0x67, 0x72, 0x70, 0x63,
+	0x2e, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x6c, 0x52, 0x75, 0x6e, 0x6e, 0x69, 0x6e, 0x67, 0x4a, 0x6f,
+	0x62, 0x73, 0x4f, 0x66, 0x54, 0x61, 0x73, 0x6b, 0x51, 0x75, 0x65, 0x75, 0x65, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x42, 0x03, 0x5a, 0x01, 0x2f, 0x62, 0x06, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1276,60 +1423,65 @@ func file_api_proto_rawDescGZIP() []byte {
 	return file_api_proto_rawDescData
 }
 
-var file_api_proto_msgTypes = make([]protoimpl.MessageInfo, 20)
+var file_api_proto_msgTypes = make([]protoimpl.MessageInfo, 22)
 var file_api_proto_goTypes = []any{
-	(*GetAllJobsOfParticularTaskQueueRequest)(nil),  // 0: grpc.GetAllJobsOfParticularTaskQueueRequest
-	(*JobInformation)(nil),                          // 1: grpc.JobInformation
-	(*GetAllJobsOfParticularTaskQueueResponse)(nil), // 2: grpc.GetAllJobsOfParticularTaskQueueResponse
-	(*AllQueuesInfoRequest)(nil),                    // 3: grpc.AllQueuesInfoRequest
-	(*QueueInfo)(nil),                               // 4: grpc.QueueInfo
-	(*AllQueuesInfoResponse)(nil),                   // 5: grpc.AllQueuesInfoResponse
-	(*GetJobStatusWithIdRequest)(nil),               // 6: grpc.GetJobStatusWithIdRequest
-	(*GetJobStatusWithIdResponse)(nil),              // 7: grpc.GetJobStatusWithIdResponse
-	(*TriggerReRunRequest)(nil),                     // 8: grpc.TriggerReRunRequest
-	(*TriggerReRunResponse)(nil),                    // 9: grpc.TriggerReRunResponse
-	(*UpdateJobStatusRequest)(nil),                  // 10: grpc.UpdateJobStatusRequest
-	(*UpdateJobStatusResponse)(nil),                 // 11: grpc.UpdateJobStatusResponse
-	(*CreateJobRequest)(nil),                        // 12: grpc.CreateJobRequest
-	(*CreateJobResponse)(nil),                       // 13: grpc.CreateJobResponse
-	(*DequeueTaskRequest)(nil),                      // 14: grpc.DequeueTaskRequest
-	(*DequeueTaskResponse)(nil),                     // 15: grpc.DequeueTaskResponse
-	(*EnqueueTaskRequest)(nil),                      // 16: grpc.EnqueueTaskRequest
-	(*EnqueueTaskResponse)(nil),                     // 17: grpc.EnqueueTaskResponse
-	(*UpdateTaskStatusRequest)(nil),                 // 18: grpc.UpdateTaskStatusRequest
-	(*UpdateTaskStatusResponse)(nil),                // 19: grpc.UpdateTaskStatusResponse
-	(*timestamppb.Timestamp)(nil),                   // 20: google.protobuf.Timestamp
+	(*GetAllRunningJobsOfTaskQueueRequest)(nil),     // 0: grpc.GetAllRunningJobsOfTaskQueueRequest
+	(*GetAllRunningJobsOfTaskQueueResponse)(nil),    // 1: grpc.GetAllRunningJobsOfTaskQueueResponse
+	(*GetAllJobsOfParticularTaskQueueRequest)(nil),  // 2: grpc.GetAllJobsOfParticularTaskQueueRequest
+	(*JobInformation)(nil),                          // 3: grpc.JobInformation
+	(*GetAllJobsOfParticularTaskQueueResponse)(nil), // 4: grpc.GetAllJobsOfParticularTaskQueueResponse
+	(*AllQueuesInfoRequest)(nil),                    // 5: grpc.AllQueuesInfoRequest
+	(*QueueInfo)(nil),                               // 6: grpc.QueueInfo
+	(*AllQueuesInfoResponse)(nil),                   // 7: grpc.AllQueuesInfoResponse
+	(*GetJobStatusWithIdRequest)(nil),               // 8: grpc.GetJobStatusWithIdRequest
+	(*GetJobStatusWithIdResponse)(nil),              // 9: grpc.GetJobStatusWithIdResponse
+	(*TriggerReRunRequest)(nil),                     // 10: grpc.TriggerReRunRequest
+	(*TriggerReRunResponse)(nil),                    // 11: grpc.TriggerReRunResponse
+	(*UpdateJobStatusRequest)(nil),                  // 12: grpc.UpdateJobStatusRequest
+	(*UpdateJobStatusResponse)(nil),                 // 13: grpc.UpdateJobStatusResponse
+	(*CreateJobRequest)(nil),                        // 14: grpc.CreateJobRequest
+	(*CreateJobResponse)(nil),                       // 15: grpc.CreateJobResponse
+	(*DequeueTaskRequest)(nil),                      // 16: grpc.DequeueTaskRequest
+	(*DequeueTaskResponse)(nil),                     // 17: grpc.DequeueTaskResponse
+	(*EnqueueTaskRequest)(nil),                      // 18: grpc.EnqueueTaskRequest
+	(*EnqueueTaskResponse)(nil),                     // 19: grpc.EnqueueTaskResponse
+	(*UpdateTaskStatusRequest)(nil),                 // 20: grpc.UpdateTaskStatusRequest
+	(*UpdateTaskStatusResponse)(nil),                // 21: grpc.UpdateTaskStatusResponse
+	(*timestamppb.Timestamp)(nil),                   // 22: google.protobuf.Timestamp
 }
 var file_api_proto_depIdxs = []int32{
-	20, // 0: grpc.JobInformation.Picked_at:type_name -> google.protobuf.Timestamp
-	20, // 1: grpc.JobInformation.Completed_at:type_name -> google.protobuf.Timestamp
-	20, // 2: grpc.JobInformation.Failed_at:type_name -> google.protobuf.Timestamp
-	1,  // 3: grpc.GetAllJobsOfParticularTaskQueueResponse.JobInfo:type_name -> grpc.JobInformation
-	4,  // 4: grpc.AllQueuesInfoResponse.AllQueuesInformation:type_name -> grpc.QueueInfo
-	1,  // 5: grpc.GetJobStatusWithIdResponse.JobInfo:type_name -> grpc.JobInformation
-	18, // 6: grpc.CoordinatorService.UpdateTaskStatus:input_type -> grpc.UpdateTaskStatusRequest
-	16, // 7: grpc.QueueService.EnqueueTask:input_type -> grpc.EnqueueTaskRequest
-	14, // 8: grpc.QueueService.DequeueTask:input_type -> grpc.DequeueTaskRequest
-	3,  // 9: grpc.QueueService.AllQueuesInfo:input_type -> grpc.AllQueuesInfoRequest
-	12, // 10: grpc.JobService.CreateJob:input_type -> grpc.CreateJobRequest
-	10, // 11: grpc.JobService.UpdateJobStatus:input_type -> grpc.UpdateJobStatusRequest
-	8,  // 12: grpc.JobService.TriggerJobReRun:input_type -> grpc.TriggerReRunRequest
-	6,  // 13: grpc.JobService.GetJobStatusWithId:input_type -> grpc.GetJobStatusWithIdRequest
-	0,  // 14: grpc.JobService.GetAllJobsOfParticularTaskQueue:input_type -> grpc.GetAllJobsOfParticularTaskQueueRequest
-	19, // 15: grpc.CoordinatorService.UpdateTaskStatus:output_type -> grpc.UpdateTaskStatusResponse
-	17, // 16: grpc.QueueService.EnqueueTask:output_type -> grpc.EnqueueTaskResponse
-	15, // 17: grpc.QueueService.DequeueTask:output_type -> grpc.DequeueTaskResponse
-	5,  // 18: grpc.QueueService.AllQueuesInfo:output_type -> grpc.AllQueuesInfoResponse
-	13, // 19: grpc.JobService.CreateJob:output_type -> grpc.CreateJobResponse
-	11, // 20: grpc.JobService.UpdateJobStatus:output_type -> grpc.UpdateJobStatusResponse
-	9,  // 21: grpc.JobService.TriggerJobReRun:output_type -> grpc.TriggerReRunResponse
-	7,  // 22: grpc.JobService.GetJobStatusWithId:output_type -> grpc.GetJobStatusWithIdResponse
-	2,  // 23: grpc.JobService.GetAllJobsOfParticularTaskQueue:output_type -> grpc.GetAllJobsOfParticularTaskQueueResponse
-	15, // [15:24] is the sub-list for method output_type
-	6,  // [6:15] is the sub-list for method input_type
-	6,  // [6:6] is the sub-list for extension type_name
-	6,  // [6:6] is the sub-list for extension extendee
-	0,  // [0:6] is the sub-list for field type_name
+	3,  // 0: grpc.GetAllRunningJobsOfTaskQueueResponse.JobInfo:type_name -> grpc.JobInformation
+	22, // 1: grpc.JobInformation.Picked_at:type_name -> google.protobuf.Timestamp
+	22, // 2: grpc.JobInformation.Completed_at:type_name -> google.protobuf.Timestamp
+	22, // 3: grpc.JobInformation.Failed_at:type_name -> google.protobuf.Timestamp
+	3,  // 4: grpc.GetAllJobsOfParticularTaskQueueResponse.JobInfo:type_name -> grpc.JobInformation
+	6,  // 5: grpc.AllQueuesInfoResponse.AllQueuesInformation:type_name -> grpc.QueueInfo
+	3,  // 6: grpc.GetJobStatusWithIdResponse.JobInfo:type_name -> grpc.JobInformation
+	20, // 7: grpc.CoordinatorService.UpdateTaskStatus:input_type -> grpc.UpdateTaskStatusRequest
+	18, // 8: grpc.QueueService.EnqueueTask:input_type -> grpc.EnqueueTaskRequest
+	16, // 9: grpc.QueueService.DequeueTask:input_type -> grpc.DequeueTaskRequest
+	5,  // 10: grpc.QueueService.AllQueuesInfo:input_type -> grpc.AllQueuesInfoRequest
+	14, // 11: grpc.JobService.CreateJob:input_type -> grpc.CreateJobRequest
+	12, // 12: grpc.JobService.UpdateJobStatus:input_type -> grpc.UpdateJobStatusRequest
+	10, // 13: grpc.JobService.TriggerJobReRun:input_type -> grpc.TriggerReRunRequest
+	8,  // 14: grpc.JobService.GetJobStatusWithId:input_type -> grpc.GetJobStatusWithIdRequest
+	2,  // 15: grpc.JobService.GetAllJobsOfParticularTaskQueue:input_type -> grpc.GetAllJobsOfParticularTaskQueueRequest
+	0,  // 16: grpc.JobService.GetAllRunningJobsOfTaskQueue:input_type -> grpc.GetAllRunningJobsOfTaskQueueRequest
+	21, // 17: grpc.CoordinatorService.UpdateTaskStatus:output_type -> grpc.UpdateTaskStatusResponse
+	19, // 18: grpc.QueueService.EnqueueTask:output_type -> grpc.EnqueueTaskResponse
+	17, // 19: grpc.QueueService.DequeueTask:output_type -> grpc.DequeueTaskResponse
+	7,  // 20: grpc.QueueService.AllQueuesInfo:output_type -> grpc.AllQueuesInfoResponse
+	15, // 21: grpc.JobService.CreateJob:output_type -> grpc.CreateJobResponse
+	13, // 22: grpc.JobService.UpdateJobStatus:output_type -> grpc.UpdateJobStatusResponse
+	11, // 23: grpc.JobService.TriggerJobReRun:output_type -> grpc.TriggerReRunResponse
+	9,  // 24: grpc.JobService.GetJobStatusWithId:output_type -> grpc.GetJobStatusWithIdResponse
+	4,  // 25: grpc.JobService.GetAllJobsOfParticularTaskQueue:output_type -> grpc.GetAllJobsOfParticularTaskQueueResponse
+	1,  // 26: grpc.JobService.GetAllRunningJobsOfTaskQueue:output_type -> grpc.GetAllRunningJobsOfTaskQueueResponse
+	17, // [17:27] is the sub-list for method output_type
+	7,  // [7:17] is the sub-list for method input_type
+	7,  // [7:7] is the sub-list for extension type_name
+	7,  // [7:7] is the sub-list for extension extendee
+	0,  // [0:7] is the sub-list for field type_name
 }
 
 func init() { file_api_proto_init() }
@@ -1343,7 +1495,7 @@ func file_api_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_api_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   20,
+			NumMessages:   22,
 			NumExtensions: 0,
 			NumServices:   3,
 		},

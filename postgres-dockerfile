@@ -3,6 +3,6 @@ FROM postgres:16.1
 WORKDIR /app
 
 # The PostgreSQL image runs all .sql, .sql.gz, or .sh scripts found in
-# /docker-entrypoint-initdb.d/ upon initialization if the data directory is 
+# /docker-entrypoint-initdb.d/ upon initialization if the data directory is
 # empty.
-COPY pkg/db/setup.sql /docker-entrypoint-initdb.d/
+COPY pkg/db/job.sql /docker-entrypoint-initdb.d/
